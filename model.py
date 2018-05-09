@@ -12,10 +12,10 @@ db = SQLAlchemy()
 ##############################################################################
 # Model definitions
 
-class User(db.Model):
+class Giver(db.Model):
     """User of ratings website."""
 
-    __tablename__ = "users"
+    __tablename__ = "givers"
 
     givr_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     email = db.Column(db.String(64), nullable=False)
@@ -37,14 +37,17 @@ class User(db.Model):
         lname={} creditcard_name={} creditcard_exp={}\
         creditcard_ccv={} alt_choice={} small_giv_amount={}\
         big_giv_amount={}>".format(self.givr_id, self.email,
-                                   self.password, self.fname
+                                   self.password, self.fname,
                                    self.lname, self.creditcard_name,
                                    self.creditcard_exp, self.creditcard_ccv,
                                    self.alt_choice, self.small_giv_amount,
                                    self.big_giv_amount)
 
     #Define relationship to alt_choice
-    preference = db.relationship("Alt_choice", backref=db.backref("alt_choice", order_by=alt_choice_id))
+    preference = db.relationship("Alt_choice", uselist=False, backref=db.backref("giver"))
+
+    #Define relationship to Givs
+    gives = db.relationship("Giv", backref=db.backref("givers", order_by=givr_id))
 
 
 # Givs Table Class
@@ -54,12 +57,12 @@ class Giv(db.Model):
 
     __tablename__ = "givs"
 
-    giv_id = db.Column(db.Integer, autoincrement=True primary_key=True)
+    giv_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     givr_id = db.Column(db.Integer, ForeignKey("Giv.givr_id"))
     date_of_order = db.Column(db.DateTime, nullable=False)
     time_of_order = db.Colum(db.DateTime, nullable=False)
-    date_of_delivery= db.Column(db.DateTime, nullable=False)
-    time_of_delivery = db.Column(db.DateTime nullable=False)
+    date_of_delivery = db.Column(db.DateTime, nullable=False)
+    time_of_delivery = db.Column(db.DateTime, nullable=False)
     requested_destination = db.Column(db.String(100), nullable=False)
     actual_destination = db.Column(db.String(100), nullable=False)
     total_amount = db.Column(db.Float, nullable=False)
@@ -81,45 +84,84 @@ class Giv(db.Model):
         actual_destination={} total_amount={} restaurant_used={} subtotal={}\
         tax={} tip={} successful_delivery={} recipient_id={} size={} tax_exempt={}\
         big_giv_amount={}>".format(self.giv_id, self.givr_id, self.date_of_order,
-                            self.time_of_order, self.requested_destination
-                            )
-
-    #Define relationship to alt_choice
-    preference = db.relationship("Alt_choice", backref=db.backref("alt_choice", order_by=alt_choice_id))
+                              self.time_of_order, self.requested_destination)
 
 
-class Rating(db.Model):
+class Alt_choice(db.Model):
     """A rating of a movie; stored in a database."""
 
-    __tablename__ = "ratings"
+    __tablename__ = "alt_choices"
 
-    rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    movie_id = db.Column(db.Integer, db.ForeignKey('movies.movie_id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    score = db.Column(db.Integer, nullable=False)
+    alt_choice_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    description = db.Column(db.String(300), nullable=False)
 
-    #Define relationship to user
-    user = db.relationship("User",
-                           backref=db.backref("ratings", order_by=rating_id))
+    # @classmethod
+    # def get_by_rating_id(cls, rating_id):
+    #     """Get a rating from database by ID and return instance."""
 
-    #Define relationship to movie
-    movie = db.relationship("Movie", backref=db.backref("ratings", order_by=rating_id))
-
-    @classmethod
-    def get_by_rating_id(cls, rating_id):
-        """Get a rating from database by ID and return instance."""
-
-        QUERY = """SELECT rating_id, movie_id, user_id, score
-                   FROM rating WHERE rating_id = :rating_id"""
-        cursor = db.session.execute(QUERY, {'rating_id': rating_id})
-        rating_id, movie_id, user_id, score = cursor.fetchone()
-        return cls(rating_id, movie_id, user_id, score)
+    #     QUERY = """SELECT rating_id, movie_id, user_id, score
+    #                FROM rating WHERE rating_id = :rating_id"""
+    #     cursor = db.session.execute(QUERY, {'rating_id': rating_id})
+    #     rating_id, movie_id, user_id, score = cursor.fetchone()
+    #     return cls(rating_id, movie_id, user_id, score)
 
     def __repr__(self):
         """Provide helpful representation when printed
         """
 
-        s = "<rating_id={} movie_id={} user_id={} score={}>".format(self.rating_id, self.movie_id, self.user_id, self.score)
+        alternatives = "<Alternate choices alt_choice_id={} description={}>".format(self.alt_choice_id, self.description)
+
+
+class Recipient(db.Model):
+    """User of GivR."""
+
+    __tablename__ = "recipients"
+
+    recipient_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    address = db.Column(db.String(100), nullable=False)
+    city = db.Column(db.String(30), nullable=False)
+    state = db.Column(db.String(100), nullable=False)
+    zipcode = db.Column(db.String(9), nullable=False)
+    latitude = db.Column(db.String, nullable=False)
+    longitude = db.Column(db.String, nullable=False)
+    recipient_type = db.Column(db.String(20), nullable=False)
+
+    def __repr__(self):
+        """Provide helpful representation when printed
+        """
+
+        return "<Recipient recipient_id={} address={} city={} state={}\
+        zipcode={} latitude={} longitude={} recipient_type={}={}".format(self.recipient_id, self.address, self.city,
+                                                                  self.zipcode, self.latitude. self.longitude, self.recipient_type)
+
+    #Define relationship to recipients
+    give = db.relationship("Giv", backref=db.backref("recipients"), uselist=False)
+
+    #Define relationship to users
+    recipient_org = db.relationship("Recipient_org", uselist=False, backref=db.backref("recipient_orgs"))
+
+
+class Recipient_org(db.Model):
+    """User of GivR."""
+
+    __tablename__ = "recipient_orgs"
+
+    org_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    recipient_id = db.Column(db.Integer, ForeignKey("Recipient.recipient_id"))
+    name = db.Column(db.String(200), nullable=False)
+    Phone = db.Colum(db.String(14), nullable=False)
+    url = db.Column(db.String(1000), nullable=False)
+
+    def __repr__(self):
+        """Provide helpful representation when printed
+        """
+
+        return "<Recipient Org org_id={} recipient_id={} name={} phone={}\
+        url={}".format(self.org_id, self.recipient_id, self.name,
+                self.phone, self.url)
+
+    #Define relationship to recipients
+    recipient = db.relationship("Recipient", backref=db.backref("recipients", order_by=recipient_id))
 
 ##############################################################################
 # Helper functions
