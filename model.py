@@ -12,7 +12,7 @@ db = SQLAlchemy()
 ##############################################################################
 # Model definitions
 
-class Giver(db.Model):
+class Givr(db.Model):
     """User of ratings website."""
 
     __tablename__ = "givers"
@@ -25,7 +25,6 @@ class Giver(db.Model):
     creditcard_name = db.Column(db.String(50), nullable=False)
     creditcard_exp = db.Column(db.DateTime, nullable=False)
     creditcard_ccv = db.Column(db.Integer, nullable=False)
-    alt_choice = db.Column(db.Integer, nullable=False, ForeignKey("alt_choice.alt_choice_id"))
     small_giv_amount = db.Column(db.Integer, nullable=False)
     big_giv_amount = db.Column(db.Integer, nullable=False)
 
@@ -46,9 +45,6 @@ class Giver(db.Model):
     #Define relationship to alt_choice
     preference = db.relationship("Alt_choice", uselist=False, backref=db.backref("giver"))
 
-    #Define relationship to Givs
-    gives = db.relationship("Giv", backref=db.backref("givers", order_by=givr_id))
-
 
 # Givs Table Class
 
@@ -58,9 +54,9 @@ class Giv(db.Model):
     __tablename__ = "givs"
 
     giv_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    givr_id = db.Column(db.Integer, ForeignKey("Giv.givr_id"))
+    givr_id = db.Column(db.Integer, db.ForeignKey("Giv.givr_id"))
     date_of_order = db.Column(db.DateTime, nullable=False)
-    time_of_order = db.Colum(db.DateTime, nullable=False)
+    time_of_order = db.Column(db.DateTime, nullable=False)
     date_of_delivery = db.Column(db.DateTime, nullable=False)
     time_of_delivery = db.Column(db.DateTime, nullable=False)
     requested_destination = db.Column(db.String(100), nullable=False)
@@ -71,7 +67,7 @@ class Giv(db.Model):
     tax = db.Column(db.Float, nullable=False)
     tip = db.Column(db.Float, nullable=False)
     successful_delivery = db.Column(db.Boolean, nullable=False)
-    recipient_id = db.Column(db.Integer, ForeignKey("Recipient.recipient_id"))
+    recipient_id = db.Column(db.Integer, db.ForeignKey("Recipient.recipient_id"))
     size = db.Column(db.String(10), nullable=False)
     tax_exempt = db.Column(db.Boolean, nullable=False)
 
@@ -84,8 +80,10 @@ class Giv(db.Model):
         actual_destination={} total_amount={} restaurant_used={} subtotal={}\
         tax={} tip={} successful_delivery={} recipient_id={} size={} tax_exempt={}\
         big_giv_amount={}>".format(self.giv_id, self.givr_id, self.date_of_order,
-                              self.time_of_order, self.requested_destination)
+                                   self.time_of_order, self.requested_destination)
 
+    #Define relationship to Givs
+    gives = db.relationship("Givr", backref=db.backref("gives", order_by=givr_id))
 
 class Alt_choice(db.Model):
     """A rating of a movie; stored in a database."""
@@ -147,9 +145,9 @@ class Recipient_org(db.Model):
     __tablename__ = "recipient_orgs"
 
     org_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    recipient_id = db.Column(db.Integer, ForeignKey("Recipient.recipient_id"))
+    recipient_id = db.Column(db.Integer, db.ForeignKey("Recipient.recipient_id"))
     name = db.Column(db.String(200), nullable=False)
-    Phone = db.Colum(db.String(14), nullable=False)
+    Phone = db.Column(db.String(14), nullable=False)
     url = db.Column(db.String(1000), nullable=False)
 
     def __repr__(self):
@@ -171,7 +169,7 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our PstgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///ratings'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///givr'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
@@ -180,7 +178,7 @@ def connect_to_db(app):
 if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
     # you in a state of being able to work with the database directly.
-
-    from server import app
-    connect_to_db(app)
-    print "Connected to DB."
+    pass
+    # from server import app
+    # connect_to_db(app)
+    # print "Connected to DB."
