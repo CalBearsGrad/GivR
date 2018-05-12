@@ -15,7 +15,7 @@ db = SQLAlchemy()
 class Givr(db.Model):
     """User of ratings website."""
 
-    __tablename__ = "givers"
+    __tablename__ = "givrs"
 
     givr_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     email = db.Column(db.String(64), nullable=False)
@@ -23,8 +23,10 @@ class Givr(db.Model):
     fname = db.Column(db.String(20), nullable=False)
     lname = db.Column(db.String(20), nullable=False)
     creditcard_name = db.Column(db.String(50), nullable=False)
+    creditcard_num = db.Column(db.String(16), nullable=False)
     creditcard_exp = db.Column(db.DateTime, nullable=False)
     creditcard_ccv = db.Column(db.Integer, nullable=False)
+    alt_choice_id = db.Column(db.Integer, db.ForeignKey("alt_choices.alt_choice_id"))
     small_giv_amount = db.Column(db.Integer, nullable=False)
     big_giv_amount = db.Column(db.Integer, nullable=False)
 
@@ -43,7 +45,7 @@ class Givr(db.Model):
                                    self.big_giv_amount)
 
     #Define relationship to alt_choice
-    preference = db.relationship("Alt_choice", uselist=False, backref=db.backref("giver"))
+    preference = db.relationship("Alt_choice", uselist=False, backref=db.backref("givr"))
 
 
 # Givs Table Class
@@ -54,7 +56,7 @@ class Giv(db.Model):
     __tablename__ = "givs"
 
     giv_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    givr_id = db.Column(db.Integer, db.ForeignKey("Giv.givr_id"))
+    givr_id = db.Column(db.Integer, db.ForeignKey("givrs.givr_id"))
     date_of_order = db.Column(db.DateTime, nullable=False)
     time_of_order = db.Column(db.DateTime, nullable=False)
     date_of_delivery = db.Column(db.DateTime, nullable=False)
@@ -67,7 +69,7 @@ class Giv(db.Model):
     tax = db.Column(db.Float, nullable=False)
     tip = db.Column(db.Float, nullable=False)
     successful_delivery = db.Column(db.Boolean, nullable=False)
-    recipient_id = db.Column(db.Integer, db.ForeignKey("Recipient.recipient_id"))
+    recipient_id = db.Column(db.Integer, db.ForeignKey("recipients.recipient_id"))
     size = db.Column(db.String(10), nullable=False)
     tax_exempt = db.Column(db.Boolean, nullable=False)
 
@@ -145,9 +147,9 @@ class Recipient_org(db.Model):
     __tablename__ = "recipient_orgs"
 
     org_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    recipient_id = db.Column(db.Integer, db.ForeignKey("Recipient.recipient_id"))
+    recipient_id = db.Column(db.Integer, db.ForeignKey("recipients.recipient_id"))
     name = db.Column(db.String(200), nullable=False)
-    Phone = db.Column(db.String(14), nullable=False)
+    phone = db.Column(db.String(14), nullable=False)
     url = db.Column(db.String(1000), nullable=False)
 
     def __repr__(self):
@@ -178,7 +180,7 @@ def connect_to_db(app):
 if __name__ == "__main__":
     # As a convenience, if we run this module interactively, it will leave
     # you in a state of being able to work with the database directly.
-    pass
-    # from server import app
-    # connect_to_db(app)
-    # print "Connected to DB."
+
+    from server import app
+    connect_to_db(app)
+    print "Connected to DB."

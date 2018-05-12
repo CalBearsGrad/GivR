@@ -5,6 +5,7 @@ from model import Givr
 from model import Recipient
 from model import Recipient_org
 from model import Alt_choice
+from datetime import datetime
 
 from model import connect_to_db, db
 from server import app
@@ -18,17 +19,18 @@ def load_alt_choice():
 
     Alt_choice.query.delete()
 
-    for row in open("seed_alt_choices"):
+    for row in open("seed_alt_choices.txt"):
 
         row = row.rstrip()
         alt_choice_id, description = row.split("|")
 
-        recipient_org = Recipient_org(alt_choice_id=alt_choice_id,
-                                      description=description)
+        recipient_org = Alt_choice(alt_choice_id=alt_choice_id,
+                                   description=description)
 
         db.session.add(recipient_org)
 
     db.session.commit()
+
 
 def load_givrs():
     """Load users from u.user into database."""
@@ -42,8 +44,10 @@ def load_givrs():
     # Read u.user file and insert data
     for row in open("seed_givrs"):
         row = row.rstrip()
-        givr_id, email, password, fname, lname, creditcard_name, creditcard_num,
-        creditcard_exp, creditcard_ccv, alt_choice, small_giv_amount, big_giv_amount = row.split("|")
+        (givr_id, email, password, fname, lname, creditcard_name, creditcard_num,
+         creditcard_exp, creditcard_ccv, alt_choice_id, small_giv_amount, big_giv_amount) = row.split("|")
+
+        creditcard_exp = datetime.strptime(creditcard_exp, "%m/%y")
 
         givr = Givr(givr_id=givr_id,
                     email=email,
@@ -54,7 +58,7 @@ def load_givrs():
                     creditcard_num=creditcard_num,
                     creditcard_exp=creditcard_exp,
                     creditcard_ccv=creditcard_ccv,
-                    alt_choice=alt_choice,
+                    alt_choice_id=alt_choice_id,
                     small_giv_amount=small_giv_amount,
                     big_giv_amount=big_giv_amount)
 
@@ -72,13 +76,16 @@ def load_recipients():
 
     Recipient.query.delete()
 
-    for row in open("seed_recipients"):
+    for row in open("seed_recipients.txt"):
 
         row = row.rstrip()
-        recipient_id, address, latitude, longitude, recipient_type = row.split("|")
+        recipient_id, address, city, state, zipcode, latitude, longitude, recipient_type = row.split("|")
 
         recipient = Recipient(recipient_id=recipient_id,
                               address=address,
+                              city=city,
+                              state=state,
+                              zipcode=zipcode,
                               latitude=latitude,
                               longitude=longitude,
                               recipient_type=recipient_type)
@@ -95,7 +102,7 @@ def load_recipient_orgs():
 
     Recipient_org.query.delete()
 
-    for row in open("seed_recipient_orgs"):
+    for row in open("seed_recipient_orgs.txt"):
 
         row = row.rstrip()
         org_id, recipient_id, name, phone, url = row.split("|")
@@ -121,5 +128,4 @@ if __name__ == "__main__":
     load_alt_choice()
     load_givrs()
     load_recipients()
-    load_recipient_orgs
-    set_val_user_id()
+    load_recipient_orgs()
