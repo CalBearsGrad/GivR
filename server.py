@@ -95,8 +95,7 @@ def payment_info():
 
         print "all credit card info is in session"
 
-        if ("creditcardname" in session) and ("creditcardnum" in session) and (
-            "creditcardexp" in session) and ("creditcardccv" in session):
+        if ("creditcardname" in session) and ("creditcardnum" in session) and ("creditcardexp" in session) and ("creditcardccv" in session):
 
             return redirect("/alt_choice")
         else:
@@ -119,29 +118,29 @@ def register_alt_choice():
 
         print "I am in alternate-choice POST"
 
-    if alternate_choice1:
-        session['alternate_choice1'] = alternate_choice
-        print "user choose choice 1"
-    elif alternate_choice2:
-        session['alternate_choice2'] = alternate_choice
-        print "user choose choice 2"
-    elif alternate_choice3:
-        session['alternate_choice3'] = alternate_choice
-        print "user choose choice 3"
+        if alternate_choice1:
+            session['alternate_choice1'] = alternate_choice
+            print "user choose choice 1"
+        elif alternate_choice2:
+            session['alternate_choice2'] = alternate_choice
+            print "user choose choice 2"
+        elif alternate_choice3:
+            session['alternate_choice3'] = alternate_choice
+            print "user choose choice 3"
 
 
-    if ("alternate_choice" in session):
+        if ("alternate_choice" in session):
 
-        return redirect("/review-preferences")
+            return redirect("/review-preferences")
 
-    else:
-        return redirect("alt_choice")
+        else:
+            return redirect("alt_choice")
 
     return render_template("alt_choice.html")
 
 @app.route('/review-preferences', methods=["POST", "GET"])
 def review_preferences():
-    """Review GivR responses before instantiating user."""
+    """Review GivR responses before instantiating user. Below are placeholders."""
 
     return render_template("review-preferences.html")
 
