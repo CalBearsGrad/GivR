@@ -19,7 +19,7 @@ def load_alt_choice():
 
     Alt_choice.query.delete()
 
-    for row in open("seed_alt_choices.txt"):
+    for row in open("seed/seed_alt_choices.txt"):
 
         row = row.rstrip()
         alt_choice_id, description = row.split("|")
@@ -42,7 +42,7 @@ def load_givrs():
     Givr.query.delete()
 
     # Read u.user file and insert data
-    for row in open("seed_givrs"):
+    for row in open("seed/seed_givrs"):
         row = row.rstrip()
         (givr_id, email, password, fname, lname, creditcard_name, creditcard_num,
          creditcard_exp, creditcard_ccv, alt_choice_id, small_giv_amount, big_giv_amount) = row.split("|")
@@ -76,7 +76,7 @@ def load_recipients():
 
     Recipient.query.delete()
 
-    for row in open("seed_recipients.txt"):
+    for row in open("seed/seed_recipients.txt"):
 
         row = row.rstrip()
         recipient_id, address, city, state, zipcode, latitude, longitude, recipient_type = row.split("|")
@@ -102,7 +102,7 @@ def load_recipient_orgs():
 
     Recipient_org.query.delete()
 
-    for row in open("seed_recipient_orgs.txt"):
+    for row in open("seed/seed_recipient_orgs.txt"):
 
         row = row.rstrip()
         org_id, recipient_id, name, phone, url = row.split("|")

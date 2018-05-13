@@ -1,0 +1,2 @@
+000000000001|536 Central Avenue|San Francisco|California|94117|37.775696|-122.444480|organization
+000000000002|1001 Polk Street|San Francisco|California|94109|37.786384|-122.420156|organization

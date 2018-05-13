@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+<h1>Preferences:</h1>
+<h2>Credit Card Info</h2>
+<h4>Enter the credit card or debit card that you would like to use.</h4>
+<form class="form-group" action="/payment-info" method="POST">
+  <div >
+    <input type="text" class="form-control" name="creditcardname" id="creditcardname" placeholder="name on credit card">
+    <br>
+    <input type="password" maxlength="16" class="form-control" name="creditcardnum" id="creditcardnum" placeholder="creditcard number">
+    <br>
+    <input type="text" class="form-control" name="creditcardexp" id="creditcardexp" placeholder="expiration date">
+    <br>
+    <input type="password number" class="form-control" name="creditcardccv" id="creditcardccv" placeholder="ccv">
+    <br>
+    <small  class="form-text text-muted">You can always change your credit card info by selecting preferences from the menu.</small>
+  </div>
+  <button type="submit" class="btn btn-success">Submit</button>
+</form>
+
+</div>
+
+    {% endblock %}
