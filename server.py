@@ -98,7 +98,7 @@ def payment_info():
         if ("creditcardname" in session) and ("creditcardnum" in session) and (
             "creditcardexp" in session) and ("creditcardccv" in session):
 
-            return redirect("/alternate-choice")
+            return redirect("/alt_choice")
         else:
             return render_template("payment_info.html")
 
@@ -106,7 +106,7 @@ def payment_info():
 
 
 
-@app.route('/alternate-choice')
+@app.route('/alt_choice', methods=["POST", "GET"])
 def register_alt_choice():
     """Obtain user's preference in case requested visibly homeless is not at location\
     upon delivery."""
@@ -125,22 +125,21 @@ def register_alt_choice():
     elif alternate_choice2:
         session['alternate_choice2'] = alternate_choice
         print "user choose choice 2"
-    else:
+    elif alternate_choice3:
         session['alternate_choice3'] = alternate_choice
         print "user choose choice 3"
 
-    print "alternate choice was made by GivR"
 
     if ("alternate_choice" in session):
 
         return redirect("/review-preferences")
 
     else:
-        return render_template("payment_info.html")
+        return redirect("alt_choice")
 
-    return render_template("payment_info.html")
+    return render_template("alt_choice.html")
 
-@app.route('/review-preferences')
+@app.route('/review-preferences', methods=["POST", "GET"])
 def review_preferences():
     """Review GivR responses before instantiating user."""
 
