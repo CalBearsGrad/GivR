@@ -1,0 +1,18 @@
+{% extends 'base_login.html' %}
+
+ {% block content %}
+<h1 right:"30px" >Welcome {{ fname }}!</h1>
+<br>
+<h2>Rapid Giv</h2>
+<br>
+<br>
+    <form>
+      <button type="button" value="Small Giv" onclick="window.location.href='/preferences-small-giv'" class="btn btn-success">Small Giv</button>
+      <br>
+      <br>
+      <button type="button" value="Big Giv" onclick="window.location.href='/rapidgiv-small'" class="btn btn-success">Small Giv</button>
+    </form>
+
+</div>
+
+    {% endblock %}

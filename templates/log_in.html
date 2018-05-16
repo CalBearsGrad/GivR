@@ -1,0 +1,15 @@
+{% extends 'base_login.html' %}
+
+
+    {% block content %}
+<form action="/" method="POST">
+    <p>What is your email address?</p>
+        <textarea name="email"></textarea>
+        <p>What is your password?</p>
+        <input type="password" name="password"></input>
+        <br>
+        <br>
+    <button type"submit" class="btn btn-success">Log In</button>
+</form>
+    <br>
+    {% endblock %}

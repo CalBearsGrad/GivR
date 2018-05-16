@@ -30,6 +30,8 @@ def index():
     return render_template("homepage.html")
 
 
+
+
 @app.route('/preferences-small-giv', methods=["POST", "GET"])
 def preferences_small_giv():
     """allow GivR to register preference for Small Givs."""
@@ -109,9 +111,12 @@ def payment_info():
 def register_alt_choice():
     """Obtain user's preference in case requested visibly homeless is not at location\
     upon delivery."""
-    alternate_choice1 = request.form.get("Deliver to another visibly homeless individual")
-    alternate_choice2 = request.form.get("Deliver to the nearest 24-hour Homeless Shelter")
-    alternate_choice3 = request.form.get("Receive a Refund")
+
+    print request.form
+
+    alternate_choice1 = request.form.get("alt_choice1")
+    alternate_choice2 = request.form.get("alt_choice2")
+    alternate_choice3 = request.form.get("alt_choice3")
 
     if request.method == "POST":
         """defining the user input that we are getting """
@@ -119,57 +124,101 @@ def register_alt_choice():
         print "I am in alternate-choice POST"
 
         if alternate_choice1:
-            session['alternate_choice1'] = alternate_choice
-            print "user choose choice 1"
+            session['alternate_choice'] = alternate_choice1
         elif alternate_choice2:
-            session['alternate_choice2'] = alternate_choice
+            session['alternate_choice'] = alternate_choice2
             print "user choose choice 2"
         elif alternate_choice3:
-            session['alternate_choice3'] = alternate_choice
+            session['alternate_choice'] = alternate_choice3
             print "user choose choice 3"
+
+
 
 
         if ("alternate_choice" in session):
 
-            return redirect("/review-preferences")
+            return redirect("/review_preferences")
 
         else:
             return redirect("alt_choice")
 
     return render_template("alt_choice.html")
 
-@app.route('/review-preferences', methods=["POST", "GET"])
+@app.route('/review_preferences', methods=["POST", "GET"])
 def review_preferences():
     """Review GivR responses before instantiating user. Below are placeholders."""
-
-    return render_template("review-preferences.html")
+    creditcardname = session["creditcardname"]
+    creditcardnum = session["creditcardnum"]
+    creditcardexp = session["creditcardexp"]
+    creditcardccv = session["creditcardccv"]
+    smallgiv = session["smallgiv"]
+    biggiv = session["biggiv"]
+    alternate_choice = session["alternate_choice"]
 
     """defining the user input that we are getting """
-    age = request.form.get("age")
-    zipcode = request.form.get("zipcode")
-    email = session["email"]
-    password = session["password"]
 
-    """Instantiating a new user """
-    givr = User(email=email, password=password, age=age, zipcode=zipcode)
-    print "I am email", email
-    print "I am password", password
-    print "I am age", age
-    print "I am zipcode", zipcode
-    db.session.add(user)
-    db.session.commit()
-    print "We created a new user!"
+    if request.method == "POST":
+        email = request.form.get("email")
+        session["email"] = email
 
-    flash("You have registered successfully")
+        password = request.form.get("password")
+        session["password"] = password
 
-    return render_template("log_in.html")
+        fname = request.form.get("fname")
+        session["fname"] = fname
+
+        lname = request.form.get("lname")
+        session["lname"] = lname
+
+        reference_email = User.query.filter_by(email=email).first()
+
+        if reference_email:
+
+            alert("You already have an account. Redirecting to log-in.")
+            return render_template("log_in.html")
+
+        elif (("email" in session) and ("password" in session) and ("fname" in session)
+        and ("lname" in session) and ("creditcardname" in session) and ("creditcardnum" in session)
+        and ("creditcardexp" in session) and ("creditcardccv" in session) and
+        ("smallgiv" in session) and ("biggiv" in session)):
 
 
-# @app.route('/welcome-givr')
-# def index():
-#     """Welcome the Givr and invite him/her to log-in."""
+            """Instantiating a new user """
+            givr=User(email=email, password=password, fname=fname, lname=lname,
+                creditcardname=creditcardname, creditcardnum=creditcardnum, creditcardexp=creditcardexp,
+                creditcardccv=creditcardccv, smallgiv=smallgiv, biggiv=biggiv)
 
-#     return render_template("homepage.html")
+            print "I am email", email
+            print "I am password", password
+            print "I am fname", fname
+            print "I am lname", lname
+            print "I am creditcardname", creditcardname
+            print "I am creditcardnum", creditcardnum
+            print "I am creditcardexp", creditcardexp
+            print "I am creditcardccv", creditcardccv
+            print "I am smallgiv", smallgiv
+            print "I am biggiv", biggiv
+
+            db.session.add(givr)
+            db.session.commit()
+
+            print "We created a new GivR!"
+
+            flash("You have registered successfully")
+
+            return render_template("welcome-givr.html")
+
+    return render_template("review_preferences.html", smallgiv=smallgiv,
+                                                      biggiv=biggiv,
+                                                      cardsuffix=creditcardnum[-4:],
+                                                      alternate_choice=alternate_choice)
+
+
+@app.route('/welcome-givr')
+def welcome_givr():
+    """Welcome the Givr and invite him/her to use Rapid Giv."""
+
+    return render_template("welcome-givr.html")
 
 # @app.route('/logged-in-homepage')
 # def index():
