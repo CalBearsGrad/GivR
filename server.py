@@ -35,7 +35,7 @@ def preferences_basic_info():
 
     print "I'm in /preferences-basic-info"
 
-    email = request.args.get("email")
+    email = request.form.get("email")
     email = session["email"]
     print email
 
