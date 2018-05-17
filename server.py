@@ -5,7 +5,7 @@ from jinja2 import StrictUndefined
 
 from flask import (Flask, render_template, redirect, request, flash,
                    session)
-from model import connect_to_db, db
+from model import connect_to_db, db, Givr, Alt_choice, Giv, Recipient,Recipient_org
 from flask_debugtoolbar import DebugToolbarExtension
 
 
@@ -35,42 +35,39 @@ def preferences_basic_info():
 
     print "I'm in /preferences-basic-info"
 
+    email = request.form.get("email")
     email = session["email"]
     print email
 
+    password = request.form.get("password")
     password = session["password"]
     print password
 
+    fname = request.form.get("fname")
     fname = session["fname"]
     print fname
 
+    lname = request.form.get("lname")
     lname = session["lname"]
     print lname
 
-    reference_email = givr.query.filter_by(email=email).first()
+    reference_email = Givr.query.filter_by(email=email).first()
 
-    if reference_email:
 
-        alert("You already have an account. Redirecting to log-in.")
-        return render_template("log_in.html")
+    if request.method == "GET":
 
-        if request.method == "GET":
+        print "in request.method == GET"
 
-            print "in request.method == GET"
+        """defining the user input that we are getting """
 
-            """defining the user input that we are getting """
+        if (("email" in session) and ("password" in session) and
+            ("fname" in session) and ("lname" in session)):
 
-            if (("email" in session) and ("password" in session) and
-                ("fname" in session) and ("lname" in session)):
+            print "email, password, fname and lname in session"
+            return redirect("/check-user")
 
-                print "email, password, fname and lname in session"
-                return redirect("/check-user")
-
-            else:
-                print "I AM IN ELSE"
-                return render_template("preferences_basic_info.html")
     else:
-        print "This is GET"
+        print "This is a new entry"
         return render_template("preferences_basic_info.html")
 
 
@@ -82,7 +79,7 @@ def check_user():
     email = session['email']
     password = session['password']
 
-    # print User.query.filter_by(email=email).first()
+    print Givr.query.filter_by(email=email).first()
 
     print email
     print password
@@ -97,9 +94,7 @@ def check_user():
                                email=email,
                                password=password)
     else:
-        return redirect("preferences-small-giv",
-                               email=email,
-                               password=password)
+        return redirect("/preferences-basic-info")
 
 @app.route('/preferences-small-giv', methods=["POST", "GET"])
 def preferences_small_giv():
@@ -109,11 +104,11 @@ def preferences_small_giv():
         print "This is POST"
         """defining the user input that we are getting """
 
-        preferences_small_giv = request.form.get("smallgiv")
+        smallgiv = request.form.get("smallgiv")
 
         if preferences_small_giv:
 
-            session['smallgiv'] = preferences_small_giv
+            session['smallgiv'] = smallgiv
 
             return redirect("/preferences-big-giv")
         else:
@@ -130,11 +125,11 @@ def preferences_big_giv():
 
     if request.method == "POST":
         """defining the user input that we are getting """
-        preferences_big_giv = request.form.get("biggiv")
+        biggiv = request.form.get("biggiv")
 
-        session['biggiv'] = preferences_big_giv
+        session['biggiv'] = biggiv
 
-        print "I am the big giv amount the Givr chose", preferences_big_giv
+        print "I am the big giv amount the Givr chose", biggiv
         print "I am the small giv amount the GivR chose", session['smallgiv']
 
         if ("smallgiv" in session) and preferences_big_giv:
@@ -212,7 +207,7 @@ def register_alt_choice():
 
 @app.route('/review_preferences', methods=["POST", "GET"])
 def review_preferences():
-    """Review GivR responses before instantiating user. Below are placeholders."""
+    """Review GivR responses before instantiating user."""
     creditcardname = session["creditcardname"]
     creditcardnum = session["creditcardnum"]
     creditcardexp = session["creditcardexp"]
@@ -223,30 +218,50 @@ def review_preferences():
 
     """defining the user input that we are getting """
 
+    email = request.form.get("email")
+    session["email"] = email
+
+    password = request.form.get("password")
+    session["password"] = password
+
+    fname = request.form.get("fname")
+    session["fname"] = fname
+
+    lname = request.form.get("lname")
+    session["lname"] = lname
+
     if request.method == "POST":
-        email = request.form.get("email")
-        session["email"] = email
-
-        password = request.form.get("password")
-        session["password"] = password
-
-        fname = request.form.get("fname")
-        session["fname"] = fname
-
-        lname = request.form.get("lname")
-        session["lname"] = lname
-
 
         if (("email" in session) and ("password" in session) and ("fname" in session)
         and ("lname" in session) and ("creditcardname" in session) and ("creditcardnum" in session)
         and ("creditcardexp" in session) and ("creditcardccv" in session) and
-        ("smallgiv" in session) and ("biggiv" in session)):
-
+        ("smallgiv" in session) and ("biggiv" in session) and ("alternate_choice" in session)):
 
             """Instantiating a new user """
-            givr=User(email=email, password=password, fname=fname, lname=lname,
+            givr=Givr(email=email, password=password, fname=fname, lname=lname,
                 creditcardname=creditcardname, creditcardnum=creditcardnum, creditcardexp=creditcardexp,
                 creditcardccv=creditcardccv, smallgiv=smallgiv, biggiv=biggiv)
+
+          #   sql = """INSERT INTO givrs (email, password, fname, lname, creditcardname, creditcardexp,
+          #       creditcardccv, smallgiv, biggiv, alternate_choice)
+          #    VALUES (:email, :password, :fname, :lname, :creditcardname, :creditcardexp,
+          #       :creditcardccv, :smallgiv, :biggiv, :alternate_choice)
+          # """
+
+          #   db.session.execute(sql,
+          #              {'email': email,
+          #               'password': password,
+          #               'fname': fname,
+          #               'lname': lname,
+          #               'creditcardname': creditcardname,
+          #               'creditcardnum': creditcardnum,
+          #               'creditcardexp': creditcardexp,
+          #               'creditcardccv': creditcardccv,
+          #               'smallgiv': smallgiv,
+          #               'biggiv': biggiv,
+          #               'alternate_choice': alternate_choice})
+
+          #   db.session.commit()
 
             print "I am email", email
             print "I am password", password
@@ -266,7 +281,8 @@ def review_preferences():
 
             flash("You have registered successfully")
 
-            return render_template("welcome-givr.html")
+            return redirect("/welcome-givr")
+
 
     return render_template("review_preferences.html", smallgiv=smallgiv,
                                                       biggiv=biggiv,
@@ -280,11 +296,21 @@ def welcome_givr():
 
     return render_template("welcome-givr.html")
 
-# @app.route('/logged-in-homepage')
-# def index():
-#     """Homepage and registration form."""
+@app.route("/log_in", methods=["POST"])
+def log_in():
+    """allow user to log_in
+    """
 
-#     return render_template("homepage.html")
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    if email in session and password in session:
+
+        return redirect("/welcome-givr.html",
+                               email=email,
+                               password=password)
+
+
 
 
 if __name__ == "__main__":
