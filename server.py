@@ -296,21 +296,25 @@ def welcome_givr():
 
     return render_template("welcome-givr.html")
 
-@app.route("/log_in", methods=["POST"])
+@app.route("/log_in", methods=["POST", "GET"])
 def log_in():
     """allow user to log_in
     """
 
-    email = request.form.get("email")
-    password = request.form.get("password")
-
-    if email in session and password in session:
-
-        return redirect("/welcome-givr.html",
-                               email=email,
-                               password=password)
+    return render_template("log_in.html")
 
 
+@app.route("/about_givr")
+def about_givr():
+    """allow user to learn about Givr."""
+
+    return render_template("/about_givr.html")
+
+@app.route("/contact_givr")
+def contact_givr():
+    """allow user to contact Givr."""
+
+    return render_template("/contact_givr.html")
 
 
 if __name__ == "__main__":
