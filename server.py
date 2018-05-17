@@ -26,10 +26,80 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage, registration form and log-in."""
 
-
     return render_template("homepage.html")
 
 
+@app.route('/preferences-basic-info', methods=["POST", "GET"])
+def preferences_basic_info():
+    """allow GivR to register preference for Small Givs."""
+
+    print "I'm in /preferences-basic-info"
+
+    email = session["email"]
+    print email
+
+    password = session["password"]
+    print password
+
+    fname = session["fname"]
+    print fname
+
+    lname = session["lname"]
+    print lname
+
+    reference_email = givr.query.filter_by(email=email).first()
+
+    if reference_email:
+
+        alert("You already have an account. Redirecting to log-in.")
+        return render_template("log_in.html")
+
+        if request.method == "GET":
+
+            print "in request.method == GET"
+
+            """defining the user input that we are getting """
+
+            if (("email" in session) and ("password" in session) and
+                ("fname" in session) and ("lname" in session)):
+
+                print "email, password, fname and lname in session"
+                return redirect("/check-user")
+
+            else:
+                print "I AM IN ELSE"
+                return render_template("preferences_basic_info.html")
+    else:
+        print "This is GET"
+        return render_template("preferences_basic_info.html")
+
+
+@app.route('/check-user', methods=["POST", "GET"])
+def check_user():
+    """allow a new user to register email address and password
+    """
+
+    email = session['email']
+    password = session['password']
+
+    # print User.query.filter_by(email=email).first()
+
+    print email
+    print password
+
+    reference_email = Givr.query.filter_by(email=email).first()
+
+    # user_email = reference_email.email
+
+    if reference_email:
+
+        return render_template("log_in.html",
+                               email=email,
+                               password=password)
+    else:
+        return redirect("preferences-small-giv",
+                               email=email,
+                               password=password)
 
 
 @app.route('/preferences-small-giv', methods=["POST", "GET"])
@@ -106,7 +176,6 @@ def payment_info():
     return render_template("payment_info.html")
 
 
-
 @app.route('/alt_choice', methods=["POST", "GET"])
 def register_alt_choice():
     """Obtain user's preference in case requested visibly homeless is not at location\
@@ -132,9 +201,6 @@ def register_alt_choice():
             session['alternate_choice'] = alternate_choice3
             print "user choose choice 3"
 
-
-
-
         if ("alternate_choice" in session):
 
             return redirect("/review_preferences")
@@ -143,6 +209,7 @@ def register_alt_choice():
             return redirect("alt_choice")
 
     return render_template("alt_choice.html")
+
 
 @app.route('/review_preferences', methods=["POST", "GET"])
 def review_preferences():
@@ -170,14 +237,8 @@ def review_preferences():
         lname = request.form.get("lname")
         session["lname"] = lname
 
-        reference_email = User.query.filter_by(email=email).first()
 
-        if reference_email:
-
-            alert("You already have an account. Redirecting to log-in.")
-            return render_template("log_in.html")
-
-        elif (("email" in session) and ("password" in session) and ("fname" in session)
+        if (("email" in session) and ("password" in session) and ("fname" in session)
         and ("lname" in session) and ("creditcardname" in session) and ("creditcardnum" in session)
         and ("creditcardexp" in session) and ("creditcardccv" in session) and
         ("smallgiv" in session) and ("biggiv" in session)):
