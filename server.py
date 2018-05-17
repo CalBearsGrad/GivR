@@ -101,7 +101,6 @@ def check_user():
                                email=email,
                                password=password)
 
-
 @app.route('/preferences-small-giv', methods=["POST", "GET"])
 def preferences_small_giv():
     """allow GivR to register preference for Small Givs."""
