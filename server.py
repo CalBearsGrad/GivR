@@ -35,7 +35,7 @@ def preferences_basic_info():
 
     print "I'm in /preferences-basic-info"
 
-    email = request.form.get("email")
+    email = request.args.get("email")
     email = session["email"]
     print email
 
@@ -44,7 +44,7 @@ def preferences_basic_info():
     print password
 
     fname = request.form.get("fname")
-    fname = session["fname"]
+    session["fname"]
     print fname
 
     lname = request.form.get("lname")
@@ -54,9 +54,9 @@ def preferences_basic_info():
     reference_email = Givr.query.filter_by(email=email).first()
 
 
-    if request.method == "GET":
+    if request.method == "POST":
 
-        print "in request.method == GET"
+        print "in request.method == POST"
 
         """defining the user input that we are getting """
 
@@ -76,10 +76,10 @@ def check_user():
     """allow a new user to register email address and password
     """
 
+    print "I am in check-user route"
+
     email = session['email']
     password = session['password']
-
-    print Givr.query.filter_by(email=email).first()
 
     print email
     print password
