@@ -2,11 +2,12 @@
 
 
     {% block content %}
-<form action="/" method="POST">
-    <p>What is your email address?</p>
-        <textarea name="email"></textarea>
+<form action="/welcome-givr" method="POST">
+        <p>What is your email address?</p>
+        <textarea name="email">{% if email %}{{ email }}{% endif %}</textarea>
         <p>What is your password?</p>
-        <input type="password" name="password"></input>
+        <input type="password" name="password"
+            {% if password %}value="{{ password }}"{% endif %}></input>
         <br>
         <br>
     <button type"submit" class="btn btn-success">Log In</button>

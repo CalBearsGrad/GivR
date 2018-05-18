@@ -34,22 +34,23 @@ def preferences_basic_info():
     """allow GivR to register preference for Small Givs."""
 
     print "I'm in /preferences-basic-info"
+    print request.form
 
     email = request.form.get("email")
-    email = session["email"]
-    print email
+    session["email"] = email
+    print "email:", email
 
     password = request.form.get("password")
-    password = session["password"]
-    print password
+    session["password"] = password
+    print "pw:", password
 
     fname = request.form.get("fname")
-    session["fname"]
-    print fname
+    session["fname"] = fname
+    print "fname:", fname
 
     lname = request.form.get("lname")
-    lname = session["lname"]
-    print lname
+    session["lname"] = lname
+    print "lname:", lname
 
     reference_email = Givr.query.filter_by(email=email).first()
 
@@ -60,7 +61,10 @@ def preferences_basic_info():
 
         """defining the user input that we are getting """
 
-        if (("email" in session) and ("password" in session) and
+        if ("email" in session) == None:
+            print "didn't get email"
+
+        elif (("email" in session) and ("password" in session) and
             ("fname" in session) and ("lname" in session)):
 
             print "email, password, fname and lname in session"
@@ -90,11 +94,9 @@ def check_user():
 
     if reference_email:
 
-        return render_template("log_in.html",
-                               email=email,
-                               password=password)
+        return redirect("/log_in")
     else:
-        return redirect("/preferences-basic-info")
+        return redirect("/preferences-small-giv")
 
 @app.route('/preferences-small-giv', methods=["POST", "GET"])
 def preferences_small_giv():
@@ -215,10 +217,6 @@ def review_preferences():
     smallgiv = session["smallgiv"]
     biggiv = session["biggiv"]
     alternate_choice = session["alternate_choice"]
-
-    """defining the user input that we are getting """
-
-    email = request.form.get("email")
     session["email"] = email
 
     password = request.form.get("password")
@@ -229,6 +227,10 @@ def review_preferences():
 
     lname = request.form.get("lname")
     session["lname"] = lname
+
+    """defining the user input that we are getting """
+
+
 
     if request.method == "POST":
 
@@ -290,18 +292,22 @@ def review_preferences():
                                                       alternate_choice=alternate_choice)
 
 
-@app.route('/welcome-givr')
+@app.route('/welcome-givr', methods=["POST", "GET"])
 def welcome_givr():
     """Welcome the Givr and invite him/her to use Rapid Giv."""
 
-    return render_template("welcome-givr.html")
+    fname = session["fname"]
+
+    return render_template("welcome-givr.html", fname=fname)
 
 @app.route("/log_in", methods=["POST", "GET"])
 def log_in():
-    """allow user to log_in
-    """
+    """allow user to log_in"""
 
-    return render_template("log_in.html")
+    email = session["email"]
+    password = session["password"]
+
+    return render_template("log_in.html", email=email, password=password)
 
 
 @app.route("/about_givr")
