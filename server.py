@@ -178,26 +178,19 @@ def register_alt_choice():
     """Obtain user's preference in case requested visibly homeless is not at location\
     upon delivery."""
 
-    print "This is request.form", request.form
-
-    alternate_choice1 = request.form.get("alt_choice1")
-    alternate_choice2 = request.form.get("alt_choice2")
-    alternate_choice3 = request.form.get("alt_choice3")
 
     if request.method == "POST":
+
+        print "This is request.form", request.form
+
+        alternate_choice = int(request.form.get("choice"))
+        print "I am alt_choice", alternate_choice
+
         """defining the user input that we are getting """
 
         print "I am in alternate-choice POST"
 
-        if alternate_choice1:
-            session['alternate_choice'] = alternate_choice1
-            print "user chooses choice 1", session['alternate_choice']
-        elif alternate_choice2:
-            session['alternate_choice'] = alternate_choice2
-            print "user choose choice 2"
-        elif alternate_choice3:
-            session['alternate_choice'] = alternate_choice3
-            print "user choose choice 3"
+        session['alternate_choice'] = alternate_choice
 
         if ("alternate_choice" in session):
 
@@ -212,6 +205,10 @@ def register_alt_choice():
 @app.route('/review_preferences', methods=["POST", "GET"])
 def review_preferences():
     """Review GivR responses before instantiating user."""
+    email = session["email"]
+    password = session["password"]
+    fname = session["fname"]
+    lname = session["lname"]
     creditcardname = session["creditcardname"]
     creditcardnum = session["creditcardnum"]
     creditcardexp = session["creditcardexp"]
@@ -219,16 +216,7 @@ def review_preferences():
     smallgiv = session["smallgiv"]
     biggiv = session["biggiv"]
     alternate_choice = session["alternate_choice"]
-    email = session["email"]
 
-    password = request.form.get("password")
-    password = session["password"]
-
-    fname = request.form.get("fname")
-    fname = session["fname"]
-
-    lname = request.form.get("lname")
-    lname = session["lname"]
 
     """defining the user input that we are getting """
 

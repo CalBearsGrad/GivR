@@ -50,7 +50,7 @@ def load_givrs():
         # creditcardexp = datetime.strptime(creditcardexp, "%m/%y")
         creditcardexp = datetime.strptime(creditcardexp, "%m/%y").strftime("%Y-%m-%d")
 
-        givr = Givr(givr_id=givr_id,
+        givr = Givr(
                     email=email,
                     password=password,
                     fname=fname,
