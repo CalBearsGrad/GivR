@@ -1,7 +1,7 @@
 """Givr."""
 
 from jinja2 import StrictUndefined
-
+from datetime import datetime
 
 from flask import (Flask, render_template, redirect, request, flash,
                    session)
@@ -51,8 +51,6 @@ def preferences_basic_info():
     lname = request.form.get("lname")
     session["lname"] = lname
     print "lname:", lname
-
-    reference_email = Givr.query.filter_by(email=email).first()
 
 
     if request.method == "POST":
@@ -156,6 +154,9 @@ def payment_info():
         creditcardexp = request.form.get("creditcardexp")
         creditcardccv = request.form.get("creditcardccv")
 
+        creditcardexp = datetime.strptime(creditcardexp, "%m/%y").strftime("%Y-%m-%d")
+        print "I am new creditcardexp", creditcardexp
+
         session['creditcardname'] = creditcardname
         session['creditcardnum'] = creditcardnum
         session['creditcardexp'] = creditcardexp
@@ -177,7 +178,7 @@ def register_alt_choice():
     """Obtain user's preference in case requested visibly homeless is not at location\
     upon delivery."""
 
-    print request.form
+    print "This is request.form", request.form
 
     alternate_choice1 = request.form.get("alt_choice1")
     alternate_choice2 = request.form.get("alt_choice2")
@@ -190,6 +191,7 @@ def register_alt_choice():
 
         if alternate_choice1:
             session['alternate_choice'] = alternate_choice1
+            print "user chooses choice 1", session['alternate_choice']
         elif alternate_choice2:
             session['alternate_choice'] = alternate_choice2
             print "user choose choice 2"
@@ -217,22 +219,25 @@ def review_preferences():
     smallgiv = session["smallgiv"]
     biggiv = session["biggiv"]
     alternate_choice = session["alternate_choice"]
-    session["email"] = email
+    email = session["email"]
 
     password = request.form.get("password")
-    session["password"] = password
+    password = session["password"]
 
     fname = request.form.get("fname")
-    session["fname"] = fname
+    fname = session["fname"]
 
     lname = request.form.get("lname")
-    session["lname"] = lname
+    lname = session["lname"]
 
     """defining the user input that we are getting """
 
+    print "This is session", session
 
+    print "This is request.method", request.method
 
-    if request.method == "POST":
+    if request.method == "GET":
+        print "in GET and about to make a GivR!"
 
         if (("email" in session) and ("password" in session) and ("fname" in session)
         and ("lname" in session) and ("creditcardname" in session) and ("creditcardnum" in session)
@@ -240,9 +245,10 @@ def review_preferences():
         ("smallgiv" in session) and ("biggiv" in session) and ("alternate_choice" in session)):
 
             """Instantiating a new user """
+            print "Getting ready to instantiate a new user"
             givr=Givr(email=email, password=password, fname=fname, lname=lname,
                 creditcardname=creditcardname, creditcardnum=creditcardnum, creditcardexp=creditcardexp,
-                creditcardccv=creditcardccv, smallgiv=smallgiv, biggiv=biggiv)
+                creditcardccv=creditcardccv, smallgiv=smallgiv, biggiv=biggiv, alt_choice_id=alternate_choice)
 
           #   sql = """INSERT INTO givrs (email, password, fname, lname, creditcardname, creditcardexp,
           #       creditcardccv, smallgiv, biggiv, alternate_choice)
@@ -275,6 +281,7 @@ def review_preferences():
             print "I am creditcardccv", creditcardccv
             print "I am smallgiv", smallgiv
             print "I am biggiv", biggiv
+            print "I am alternate_choice", alternate_choice
 
             db.session.add(givr)
             db.session.commit()

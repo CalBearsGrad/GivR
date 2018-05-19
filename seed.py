@@ -44,23 +44,24 @@ def load_givrs():
     # Read u.user file and insert data
     for row in open("seed/seed_givrs"):
         row = row.rstrip()
-        (givr_id, email, password, fname, lname, creditcard_name, creditcard_num,
-         creditcard_exp, creditcard_ccv, alt_choice_id, small_giv_amount, big_giv_amount) = row.split("|")
+        (givr_id, email, password, fname, lname, creditcardname, creditcardnum,
+         creditcardexp, creditcardccv, smallgiv, biggiv, alt_choice_id) = row.split("|")
 
-        creditcard_exp = datetime.strptime(creditcard_exp, "%m/%y")
+        # creditcardexp = datetime.strptime(creditcardexp, "%m/%y")
+        creditcardexp = datetime.strptime(creditcardexp, "%m/%y").strftime("%Y-%m-%d")
 
         givr = Givr(givr_id=givr_id,
                     email=email,
                     password=password,
                     fname=fname,
                     lname=lname,
-                    creditcard_name=creditcard_name,
-                    creditcard_num=creditcard_num,
-                    creditcard_exp=creditcard_exp,
-                    creditcard_ccv=creditcard_ccv,
-                    alt_choice_id=alt_choice_id,
-                    small_giv_amount=small_giv_amount,
-                    big_giv_amount=big_giv_amount)
+                    creditcardname=creditcardname,
+                    creditcardnum=creditcardnum,
+                    creditcardexp=creditcardexp,
+                    creditcardccv=creditcardccv,
+                    smallgiv=smallgiv,
+                    biggiv=biggiv,
+                    alt_choice_id=alt_choice_id)
 
         # We need to add to the session or it won't ever be stored
         db.session.add(givr)

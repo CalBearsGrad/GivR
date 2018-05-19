@@ -22,27 +22,28 @@ class Givr(db.Model):
     password = db.Column(db.String(64), nullable=False)
     fname = db.Column(db.String(20), nullable=False)
     lname = db.Column(db.String(20), nullable=False)
-    creditcard_name = db.Column(db.String(50), nullable=False)
-    creditcard_num = db.Column(db.String(16), nullable=False)
-    creditcard_exp = db.Column(db.DateTime, nullable=False)
-    creditcard_ccv = db.Column(db.Integer, nullable=False)
+    creditcardname = db.Column(db.String(50), nullable=False)
+    creditcardnum = db.Column(db.String(16), nullable=False)
+    creditcardexp = db.Column(db.DateTime, nullable=False)
+    creditcardccv = db.Column(db.Integer, nullable=False)
+    smallgiv = db.Column(db.Integer, nullable=False)
+    biggiv = db.Column(db.Integer, nullable=False)
     alt_choice_id = db.Column(db.Integer, db.ForeignKey("alt_choices.alt_choice_id"))
-    small_giv_amount = db.Column(db.Integer, nullable=False)
-    big_giv_amount = db.Column(db.Integer, nullable=False)
+
 
     def __repr__(self):
         """Provide helpful representation when printed
         """
 
         return "<GivR givr_id={} email={} password={} fname={}\
-        lname={} creditcard_name={} creditcard_exp={}\
-        creditcard_ccv={} alt_choice={} small_giv_amount={}\
-        big_giv_amount={}>".format(self.givr_id, self.email,
+        lname={} creditcardname={} creditcardnum={} creditcardexp={}\
+        creditcardccv={} smallgiv={}\
+        biggiv={} alt_choice_id={}>".format(self.givr_id, self.email,
                                    self.password, self.fname,
-                                   self.lname, self.creditcard_name,
-                                   self.creditcard_exp, self.creditcard_ccv,
-                                   self.alt_choice, self.small_giv_amount,
-                                   self.big_giv_amount)
+                                   self.lname, self.creditcardname,
+                                   self.creditcardexp, self.creditcardccv,
+                                   self.small_giv_amount,
+                                   self.big_giv_amount, self.alt_choice_id)
 
     #Define relationship to alt_choice
     preference = db.relationship("Alt_choice", uselist=False, backref=db.backref("givr"))
