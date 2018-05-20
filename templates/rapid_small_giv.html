@@ -1,0 +1,60 @@
+{% extends 'base_login.html' %}
+
+ {% block content %}
+<h1 right:"30px" >Welcome {{ fname }}!</h1>
+<br>
+<h2>Rapid Small Giv</h2>
+<small>Wanted to do a big giv? Click the button to be redirected</small>
+<br>
+<br>
+    <form>
+    <h3>Where do you want your Giv to be delivered?</h3>
+    <br>
+      <button type="button" value="Small Giv" onclick="window.location.href='/rapid-small-giv'" class="btn btn-success">To my Current Location</button>
+      <br>
+      <br>
+      <h2>OR enter an address below. </h2>
+      <br>
+        <div class="form-row">
+  <div class="form-group">
+    <label for="inputAddress">Address</label>
+    <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+  </div>
+  <div class="form-group">
+    <label for="inputAddress2">Address 2</label>
+    <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputCity">City</label>
+      <input type="text" class="form-control" id="inputCity">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputState">State</label>
+      <select id="inputState" class="form-control">
+        <option selected>Choose...</option>
+        <option>California</option>
+      </select>
+    </div>
+    <div class="form-group col-md-2">
+      <label for="inputZip">Zip</label>
+      <input type="text" class="form-control" id="inputZip">
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="gridCheck">
+      <label class="form-check-label" for="gridCheck">
+        Check me out
+      </label>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Sign in</button>
+
+
+      <button type="button" value="Big Giv" onclick="window.location.href='/rapidgiv-small'" class="btn btn-success">Big Giv</button>
+    </form>
+
+</div>
+
+    {% endblock %}

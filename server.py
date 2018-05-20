@@ -34,7 +34,8 @@ def preferences_basic_info():
     """allow GivR to register preference for Small Givs."""
 
     print "I'm in /preferences-basic-info"
-    print request.form
+    session.clear()
+    print "session is clean."
 
     email = request.form.get("email")
     session["email"] = email
@@ -80,8 +81,8 @@ def check_user():
 
     print "I am in check-user route"
 
-    email = session['email']
-    password = session['password']
+    email = request.form.get("email")
+    password = request.form.get("password")
 
     print email
     print password
@@ -91,6 +92,9 @@ def check_user():
     # user_email = reference_email.email
 
     if reference_email:
+        session.clear()
+        session['email'] = email
+        session['password'] = password
 
         return redirect("/log_in")
     else:
@@ -132,14 +136,42 @@ def preferences_big_giv():
         print "I am the big giv amount the Givr chose", biggiv
         print "I am the small giv amount the GivR chose", session['smallgiv']
 
-        if ("smallgiv" in session) and preferences_big_giv:
+        if ("smallgiv" in session) and ("biggiv" in session):
 
-            return redirect("/payment-info")
+            return redirect("/alt_choice")
         else:
             return render_template("homepage.html")
 
     return render_template("preferences-big-giv.html")
 
+
+@app.route('/alt_choice', methods=["POST", "GET"])
+def register_alt_choice():
+    """Obtain user's preference in case requested visibly homeless is not at location\
+    upon delivery."""
+
+
+    if request.method == "POST":
+
+        print "This is request.form", request.form
+
+        alternate_choice = int(request.form.get("choice"))
+        print "I am alt_choice", alternate_choice
+
+        """defining the user input that we are getting """
+
+        print "I am in alternate-choice POST"
+
+        session['alternate_choice'] = alternate_choice
+
+        if ("alternate_choice" in session):
+
+            return redirect("/payment-info")
+
+        else:
+            return redirect("alt_choice")
+
+    return render_template("alt_choice.html")
 
 @app.route('/payment-info', methods=["POST", "GET"])
 def payment_info():
@@ -166,40 +198,11 @@ def payment_info():
 
         if ("creditcardname" in session) and ("creditcardnum" in session) and ("creditcardexp" in session) and ("creditcardccv" in session):
 
-            return redirect("/alt_choice")
+            return render_template("review_preferences.html")
         else:
             return render_template("payment_info.html")
 
     return render_template("payment_info.html")
-
-
-@app.route('/alt_choice', methods=["POST", "GET"])
-def register_alt_choice():
-    """Obtain user's preference in case requested visibly homeless is not at location\
-    upon delivery."""
-
-
-    if request.method == "POST":
-
-        print "This is request.form", request.form
-
-        alternate_choice = int(request.form.get("choice"))
-        print "I am alt_choice", alternate_choice
-
-        """defining the user input that we are getting """
-
-        print "I am in alternate-choice POST"
-
-        session['alternate_choice'] = alternate_choice
-
-        if ("alternate_choice" in session):
-
-            return redirect("/review_preferences")
-
-        else:
-            return redirect("alt_choice")
-
-    return render_template("alt_choice.html")
 
 
 @app.route('/review_preferences', methods=["POST", "GET"])
@@ -223,6 +226,8 @@ def review_preferences():
     print "This is session", session
 
     print "This is request.method", request.method
+
+
 
     if request.method == "GET":
         print "in GET and about to make a GivR!"
@@ -291,9 +296,12 @@ def review_preferences():
 def welcome_givr():
     """Welcome the Givr and invite him/her to use Rapid Giv."""
 
-    fname = session["fname"]
+    email = session["email"]
+    user = Givr.query.filter_by(email=email).first()
+    fname = user.fname
 
     return render_template("welcome-givr.html", fname=fname)
+
 
 @app.route("/log_in", methods=["POST", "GET"])
 def log_in():
@@ -311,11 +319,66 @@ def about_givr():
 
     return render_template("/about_givr.html")
 
+
 @app.route("/contact_givr")
 def contact_givr():
     """allow user to contact Givr."""
 
     return render_template("/contact_givr.html")
+
+
+@app.route("/log_out")
+def log_out():
+    """allow user to log out of Givr."""
+    session.clear()
+
+    return redirect("/")
+
+
+@app.route("/rapid_small_giv")
+def rapid_giv():
+    """allow user to complete a giv."""
+
+    if request.method == "POST"
+        # Get Form Data (giv_size and address)
+        giv_size = request.args.get("giv_size")
+        # address1 = ...
+        # zipcode = ...
+        # notes = ...
+
+        # Create user object using user email from session
+        email = session["email"]
+        print "This is user's email", email
+        user = Givr.query.filter_by(email=email).first()
+
+        # Get giv amount from user object's attributes
+        if (giv_size == "small"):
+            giv_amount = user.smallgive
+        elif (giv_size == "big"):
+            give_amount = user.biggiv
+
+        ################################# Create postmates request
+
+        # # Build the payload
+        # payload = {'term': 'honeydew'}
+
+        # # Make the request; save the response. response is json returned from postmates api
+        # response = requests.get(
+        #     "https://itunes.apple.com/search",
+        #     params=payload)
+
+        # # Do something with response ??
+        # giv_response = response.json() # converting json to python dictionary
+
+
+        # # Extract info from giv_response and store in DB
+        #     # date_of_order = giv_response['created']
+
+
+        # Flash success message or redirct user
+    return render_template("/rapid_smallgiv.html")
+
+
 
 
 if __name__ == "__main__":
