@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+
+<form action="/preferences-basic-info" method="POST">
+
+  <div class="form-group">
+    <label>Email address</label>
+    <input type="text" name="email" class="form-control" id="email" placeholder="email@something.com    (required)" required>
+    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="password" name="password" class="form-control" id="password" placeholder="Password    (required)" required>
+  </div>
+
+  <div class="form-group">
+    <label>First Name</label>
+    <input type="text" name="fname" class="form-control" id="fname" placeholder="Jane    (name required)" required>
+  </div>
+
+  <div class="form-group">
+    <label>Last Name</label>
+    <input type="text" name="lname" class="form-control" id="lname" placeholder="Doe   (name required)" required>
+  </div>
+  <h2>Small Giv</h2>
+<h4>What is the highest amount you are willing to give for a snack, including tax, delivery and tip?</h4>
+<form class="form-group" action="/preferences-small-giv"  method="POST">
+  <div>
+    <label for="smallgiv"></label>
+    <input type="text" class="form-control" id="smallgivamount" name="smallgiv" placeholder="$     (required)" required>
+    <small class="form-text text-muted">You can always change your amount by selecting preferences from the menu.</small>
+  </div>
+  <br>
+  <button type="submit" value="Submit" class="btn btn-success">Submit</button>
+</form>
+
+</div>
+
+    {% endblock %}
