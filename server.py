@@ -351,35 +351,26 @@ def rapid_giv():
     # giv_size = request.args.get("smallgiv")
 
     restaurant = {"name": "Lers Ros Thai",
-                  "address": "307 Hayes St, San Francisco, CA 94102",
-                  "long_lat": "37.776997, -122.421683",
-                  "items": {"item1": {"name":"Jasmine Steamed Rice", "price": 2.00}
-                            "item2": {"name": "Sticky Rice", "price": 2.50}
-                            "item3": {"name": "Brown Rice", "price": 2.50}
-                            "item4": {"name": "Steamed Rice Noodle", "price": 3.00}
-                            "item5": {"name": "Cucumber Salad", "price": 3.95}
-                            "item6": {"name": "Sweet Sticky Rice", "price": 4.95}
-                            "item7": {"name": "Brown Rice & Peanut Sauce", "price": 6.45}
-                            "item8": {"name": "Jasmine Steamed Rice & Peanut Sauce", "price": 5.95}
-                            "item9": {"name": "Steamed Rice Noodle & Peanut Sauce", "price": 6.95}
-                            "item10": {"name": "Pad Kee Moo", "price": 11.95}
-                            "item11": {"name": "Pad See Ew", "price": 11.95}
-                            "item12": {"name": "Pad Thai", "price": 11.95}
-                   "delivery_fee": 3.99}
-    }
+              "address": "307 Hayes St, San Francisco, CA 94102",
+              "long_lat": "37.776997, -122.421683",
+              "items": [["Jasmine Steamed Rice", 2.00],
+                        ["Sticky Rice", 2.50],
+                        ["Brown Rice", 2.50],
+                        ["Steamed Rice Noodle", 3.00],
+                        ["Cucumber Salad", 3.95],
+                        ["Sweet Sticky Rice", 4.95],
+                        ["Brown Rice & Peanut Sauce", 6.45],
+                        ["Jasmine Steamed Rice & Peanut Sauce", 5.95],
+                        ["Steamed Rice Noodle & Peanut Sauce", 6.95],
+                        ["Pad Kee Moo", 11.95],
+                        ["Pad See Ew", 11.95],
+                        ["Pad Thai", 11.95]],
+               "delivery_fee": 3.99}
+
 
 
     def manifest(dictionary):
-        amount = user.smallgiv
-
-        order = ""
-
-        food_items = restaurant[items]
-
-        delivery_fee = restaurant["delivery_fee"]
-
-        while order <= (amount - (delivery_fee + ):
-
+        pass
 
     if request.method == "POST":
         # Get Form Data (giv_size and address)
@@ -410,14 +401,12 @@ def rapid_giv():
         pprint(response_from_postmates_dictionary)
         print
         print response_from_postmates_dictionary['currency']
-        print quote_id = response_from_postmates_dictionary['id']
+        # print quote_id = response_from_postmates_dictionary['id']
 
         ################################# Create postmates request
         #Create a Delivery
         payload = {"quote_id": quote_id,
-                    "manifest":
-
-         }
+                    "manifest": 1}
 
         # Flash success message or redirct user
     return render_template("/rapid_small_giv.html")
