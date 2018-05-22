@@ -1,97 +1,95 @@
 {% extends 'base_login.html' %}
 
- {% block content %}
+{% block content %}
 <h1 right:"30px" >Rapid Small Giv!</h1>
 <small>Wanted to do a big giv? Click the button to be redirected</small>
 <button type="button" value="Big Giv" onclick="window.location.href='/rapid_big_giv'" class="btn btn-success btn-sm">Big Giv</button>
 <br>
 <br>
 <form class="form-group" action="/rapid_small_giv" method="POST">
-      <br>
+    <br>
     <h3>Where do you want your Giv to be delivered?</h3>
     <br>
-      <button type="button" value="current_location" onclick="window.location.href='/rapid_small_giv'" class="btn btn-success">To my Current Location</button>
-      <br>
-      <br>
-      <br>
-      <h3>OR enter an address below. </h3>
-      <br>
-        <div class="form-row">
-  <div class="form-group">
-    <label for="address">Address</label>
-    <input type="text" class="form-control" id="address" placeholder="1234 Main Street">
-  </div>
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="city">City</label>
-      <input type="text" class="form-control" id="city">
-    </div>
-    <div class="form-group col-md-4">
-      <label for="state">State</label>
-      <select id="state" class="form-control">
-        <option selected>Choose...</option>
-        <option>Alabama</option>
-        <option>Alaska</option>
-        <option>Arizona</option>
-        <option>Arkansas</option>
-        <option>California</option>
-        <option>Colorado</option>
-        <option>Connecticut</option>
-        <option>Delaware</option>
-        <option>Florida</option>
-        <option>Georgia</option>
-        <option>Hawaii</option>
-        <option>Idaho</option>
-        <option>Illinois</option>
-        <option>Indiana</option>
-        <option>Iowa</option>
-        <option>Kansas</option>
-        <option>Kentucky</option>
-        <option>Louisiana</option>
-        <option>Maine</option>
-        <option>Maryland</option>
-        <option>Massachusetts</option>
-        <option>Michigan</option>
-        <option>Minnesota</option>
-        <option>Mississippi</option>
-        <option>Missouri</option>
-        <option>Montana</option>
-        <option>Nebraska</option>
-        <option>Nevada</option>
-        <option>New Hampshire</option>
-        <option>New Jersey</option>
-        <option>New Mexico</option>
-        <option>New York</option>
-        <option>North Carolina</option>
-        <option>North Dakota</option>
-        <option>Ohio</option>
-        <option>Oklahoma</option>
-        <option>Oregon</option>
-        <option>Pennsylvania</option>
-        <option>Rhode Island</option>
-        <option>South Carolina</option>
-        <option>South Dakota</option>
-        <option>Tennessee</option>
-        <option>Texas</option>
-        <option>Utah</option>
-        <option>Vermont</option>
-        <option>Virginia</option>
-        <option>Washington</option>
-        <option>West Virginia</option>
-        <option>Wisconsin</option>
-        <option>Wyoming</option>
+    <button type="button" value="current_location" onclick="window.location.href='/rapid_small_giv'" class="btn btn-success">To my Current Location</button>
+    <br>
+    <br>
+    <br>
+    <h3>OR enter an address below. </h3>
+    <br>
 
-      </select>
+    <div class="form-group">
+        <label for="address">Address</label>
+        <input name="address" type="text" class="form-control" id="address" placeholder="1234 Main Street">
     </div>
-    <div class="form-group col-md-2">
-      <label for="zipcode">Zipcode</label>
-      <input type="text" class="form-control" id="inputZip">
+
+    <div class="form-group">
+        <label for="city">City</label>
+        <input name="city" type="text" class="form-control" id="city">
     </div>
-  </div>
-  </div>
-  <button type="submit" class="btn btn-success">Sign in</button>
+
+    <div class="form-group">
+        <label for="state">State</label>
+        <select name="state" class="form-control">
+            <option selected>Choose...</option>
+            <option>Alabama</option>
+            <option>Alaska</option>
+            <option>Arizona</option>
+            <option>Arkansas</option>
+            <option value="California" >California</option>
+            <option>Colorado</option>
+            <option>Connecticut</option>
+            <option>Delaware</option>
+            <option>Florida</option>
+            <option>Georgia</option>
+            <option>Hawaii</option>
+            <option>Idaho</option>
+            <option>Illinois</option>
+            <option>Indiana</option>
+            <option>Iowa</option>
+            <option>Kansas</option>
+            <option>Kentucky</option>
+            <option>Louisiana</option>
+            <option>Maine</option>
+            <option>Maryland</option>
+            <option>Massachusetts</option>
+            <option>Michigan</option>
+            <option>Minnesota</option>
+            <option>Mississippi</option>
+            <option>Missouri</option>
+            <option>Montana</option>
+            <option>Nebraska</option>
+            <option>Nevada</option>
+            <option>New Hampshire</option>
+            <option>New Jersey</option>
+            <option>New Mexico</option>
+            <option>New York</option>
+            <option>North Carolina</option>
+            <option>North Dakota</option>
+            <option>Ohio</option>
+            <option>Oklahoma</option>
+            <option>Oregon</option>
+            <option>Pennsylvania</option>
+            <option>Rhode Island</option>
+            <option>South Carolina</option>
+            <option>South Dakota</option>
+            <option>Tennessee</option>
+            <option>Texas</option>
+            <option>Utah</option>
+            <option>Vermont</option>
+            <option>Virginia</option>
+            <option>Washington</option>
+            <option>West Virginia</option>
+            <option>Wisconsin</option>
+            <option>Wyoming</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="zipcode">Zipcode</label>
+        <input name="zipcode" type="text" class="form-control" id="inputZip">
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
 </form>
 
-</div>
-
-    {% endblock %}
+{% endblock %}

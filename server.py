@@ -7,6 +7,10 @@ from flask import (Flask, render_template, redirect, request, flash,
                    session)
 from model import connect_to_db, db, Givr, Alt_choice, Giv, Recipient,Recipient_org
 from flask_debugtoolbar import DebugToolbarExtension
+import requests
+from requests.auth import HTTPBasicAuth
+from pprint import pprint
+
 
 
 app = Flask(__name__)
@@ -335,68 +339,85 @@ def log_out():
     return redirect("/")
 
 
-@app.route("/rapid_small_giv")
+@app.route("/rapid_small_giv", methods=['POST', 'GET'])
 def rapid_giv():
     """allow user to complete a giv."""
 
     email = session["email"]
     user = Givr.query.filter_by(email=email).first()
     fname = user.fname
-    giv_size = request.args.get("smallgiv")
+    giv_amount = user.smallgiv
+    session["giv_amount"] = giv_amount
+    # giv_size = request.args.get("smallgiv")
+
+    restaurant = {"name": "Lers Ros Thai",
+                  "address": "307 Hayes St, San Francisco, CA 94102",
+                  "long_lat": "37.776997, -122.421683",
+                  "items": {"item1": {"name":"Jasmine Steamed Rice", "price": 2.00}
+                            "item2": {"name": "Sticky Rice", "price": 2.50}
+                            "item3": {"name": "Brown Rice", "price": 2.50}
+                            "item4": {"name": "Steamed Rice Noodle", "price": 3.00}
+                            "item5": {"name": "Cucumber Salad", "price": 3.95}
+                            "item6": {"name": "Sweet Sticky Rice", "price": 4.95}
+                            "item7": {"name": "Brown Rice & Peanut Sauce", "price": 6.45}
+                            "item8": {"name": "Jasmine Steamed Rice & Peanut Sauce", "price": 5.95}
+                            "item9": {"name": "Steamed Rice Noodle & Peanut Sauce", "price": 6.95}
+                            "item10": {"name": "Pad Kee Moo", "price": 11.95}
+                            "item11": {"name": "Pad See Ew", "price": 11.95}
+                            "item12": {"name": "Pad Thai", "price": 11.95}
+                   "delivery_fee": 3.99}
+    }
+
+
+    def manifest(dictionary):
+        amount = user.smallgiv
+
+        order = ""
+
+        food_items = restaurant[items]
+
+        delivery_fee = restaurant["delivery_fee"]
+
+        while order <= (amount - (delivery_fee + ):
+
 
     if request.method == "POST":
         # Get Form Data (giv_size and address)
-        
-        address = request.args.get("address")
-        city = request.args.get("city")
-        state = request.args.get("state")
-        zipcode = request.args.get("zipcode")
 
-        full_address = "address={}, city={}, state={}, zipcode={}"
+        address = request.form.get("address")
+        city = request.form.get("city")
+        state = request.form.get("state")
+        zipcode = request.form.get("zipcode")
 
+        full_address = "{}, {}, {} {}".format(address, city, state, zipcode)
+        print "full_address: ", full_address
         notes = "Please deliver food to visibly homeless individual in or near this location."
 
         # Get giv amount from user object's attributes
-        if giv_size:
-            giv_size = user.smallgiv
-            session["giv_size"] = giv_size
+
+
 
         ################################# Create postmates request
         #Delivery Quotes
-        curl -u a03e8608-cf6b-4441-ade2-696e2c437d6c: \
-            -d “dropoff_address= full_address” \
-            -d “pickup_address=101 Market St, San Francisco, CA 94105” \
-            -X POST https://api.postmates.com/v1/customers/cus_Lk1phJYn_uU88V/delivery_quotes
+        payload = {"dropoff_address": full_address,
+                    "pickup_address": "307 Hayes St, San Francisco, CA 94102"}
 
+        print "payload: ", payload
 
-        # # Build the payload
-        payload = {'term': 'honeydew'}
+        response_from_postmates = requests.post("https://api.postmates.com/v1/customers/cus_Lk1phJYn_uU88V/delivery_quotes", data=payload, auth=("a03e8608-cf6b-4441-ade2-696e2c437d6c", ''))
+        response_from_postmates_dictionary = response_from_postmates.json()
+        print
+        pprint(response_from_postmates_dictionary)
+        print
+        print response_from_postmates_dictionary['currency']
+        print quote_id = response_from_postmates_dictionary['id']
 
-        # # Make the request; 
-        curl -u a03e8608-cf6b-4441-ade2-696e2c437d6c: \
-            -d “manifest=1 Stuffed Puppy” \
-            -d “pickup_name=Puppies On-Demand” \
-            -d “pickup_address=101 Market St, San Francisco, CA 94105” \
-            -d “pickup_phone_number=555–555–5555” \
-            -d “pickup_notes=Just come inside, give us order #123” \
-            -d “dropoff_name=Alice Customer” \
-            -d “dropoff_address=20 McAllister St, San Francisco, CA 94102” \
-            -d “dropoff_phone_number=415–555–5555” \
-            -d “quote_id=dqt_K7SCxZJzteH9R-” \
-            -X POST https://api.postmates.com/v1/customers/cus_abc123/deliveries
+        ################################# Create postmates request
+        #Create a Delivery
+        payload = {"quote_id": quote_id,
+                    "manifest":
 
-        #save the response. response is json returned from postmates api
-        # response = requests.get(
-        #     "https://itunes.apple.com/search",
-        #     params=payload)
-
-        # # Do something with response ??
-        # giv_response = response.json() # converting json to python dictionary
-
-
-        # # Extract info from giv_response and store in DB
-        #     # date_of_order = giv_response['created']
-
+         }
 
         # Flash success message or redirct user
     return render_template("/rapid_small_giv.html")
