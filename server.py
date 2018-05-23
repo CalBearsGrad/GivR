@@ -351,65 +351,109 @@ def rapid_giv():
     # giv_size = request.args.get("smallgiv")
 
     restaurant = {"name": "Lers Ros Thai",
-              "address": "307 Hayes St, San Francisco, CA 94102",
-              "long_lat": "37.776997, -122.421683",
-              "items": [["Jasmine Steamed Rice", 2.00],
-                        ["Sticky Rice", 2.50],
-                        ["Brown Rice", 2.50],
-                        ["Steamed Rice Noodle", 3.00],
-                        ["Cucumber Salad", 3.95],
-                        ["Sweet Sticky Rice", 4.95],
-                        ["Brown Rice & Peanut Sauce", 6.45],
-                        ["Jasmine Steamed Rice & Peanut Sauce", 5.95],
-                        ["Steamed Rice Noodle & Peanut Sauce", 6.95],
-                        ["Pad Kee Moo", 11.95],
-                        ["Pad See Ew", 11.95],
-                        ["Pad Thai", 11.95]],
-               "delivery_fee": 3.99}
+                  "address": "307 Hayes St, San Francisco, CA 94102",
+                  "phone": "(415) 931-6917",
+                  "long_lat": ["37.776997", "-122.421683"],
+                  "items": [["Jasmine Steamed Rice", 2.00],
+                            ["Sticky Rice", 2.50],
+                            ["Brown Rice", 2.50],
+                            ["Steamed Rice Noodle", 3.00],
+                            ["Cucumber Salad", 3.95],
+                            ["Sweet Sticky Rice", 4.95],
+                            ["Brown Rice & Peanut Sauce", 6.45],
+                            ["Jasmine Steamed Rice & Peanut Sauce", 5.95],
+                            ["Steamed Rice Noodle & Peanut Sauce", 6.95],
+                            ["Pad Kee Moo", 11.95],
+                            ["Pad See Ew", 11.95],
+                            ["Pad Thai", 11.95]],
+                  "delivery_fee": 3.99}
+
+    famous_inventors = ["Thomas L. Jennings", "Mark E. Dean", "Madam C.J. Walker", "Dr. Shirely Jackson",
+                        "Charles Richard Dew", "Marie Van Brittan Brown", "George Carruthers", "Dr. Patricia Bath",
+                        "Jan E. Matzeliger", "Alexander Miles"]
+
+    def build_manifest(dictionary):
+        order = 0;
+        subtotal = order + (order * .085)
+        total = restaurant["delivery_fee"] + subtotal
+        items = restaurant["items"]
+
+        while (subtotal + restaurant["delivery_fee"]) <= user.smallgiv:
+            for item in items:
+                order = item[1]
 
 
 
-    def manifest(dictionary):
-        pass
+    manifest = build_manifest(restaurant)
 
-    if request.method == "POST":
-        # Get Form Data (giv_size and address)
+    # def make_manifest_reference(list):
+    #     return choice.famous_inventors, " ", "876521"
 
-        address = request.form.get("address")
-        city = request.form.get("city")
-        state = request.form.get("state")
-        zipcode = request.form.get("zipcode")
+    # manifest_reference = make_manifest_reference(famous_inventors)
 
-        full_address = "{}, {}, {} {}".format(address, city, state, zipcode)
-        print "full_address: ", full_address
-        notes = "Please deliver food to visibly homeless individual in or near this location."
+    # if request.method == "POST":
+    #     # Get Form Data (giv_size and address)
 
-        # Get giv amount from user object's attributes
+    #     address = request.form.get("address")
+    #     city = request.form.get("city")
+    #     state = request.form.get("state")
+    #     zipcode = request.form.get("zipcode")
+
+    #     full_address = "{}, {}, {} {}".format(address, city, state, zipcode)
+    #     print "full_address: ", full_address
+    #     notes = "Please deliver food to visibly homeless individual in or near this location."
+
+    #     # Get giv amount from user object's attributes
 
 
 
-        ################################# Create postmates request
-        #Delivery Quotes
-        payload = {"dropoff_address": full_address,
-                    "pickup_address": "307 Hayes St, San Francisco, CA 94102"}
+    #     ################################# Create postmates request
+    #     #Delivery Quotes
+    #     payload_quote = {"dropoff_address": full_address,
+    #                 "pickup_address": "307 Hayes St, San Francisco, CA 94102"}
 
-        print "payload: ", payload
+    #     print "payload: ", payload
 
-        response_from_postmates = requests.post("https://api.postmates.com/v1/customers/cus_Lk1phJYn_uU88V/delivery_quotes", data=payload, auth=("a03e8608-cf6b-4441-ade2-696e2c437d6c", ''))
-        response_from_postmates_dictionary = response_from_postmates.json()
-        print
-        pprint(response_from_postmates_dictionary)
-        print
-        print response_from_postmates_dictionary['currency']
-        # print quote_id = response_from_postmates_dictionary['id']
+    #     response_from_postmates_quote = requests.post("https://api.postmates.com/v1/customers/cus_Lk1phJYn_uU88V/delivery_quotes", data=payload, auth=("a03e8608-cf6b-4441-ade2-696e2c437d6c", ''))
+    #     response_from_postmates_dictionary_quote = response_from_postmates.json()
+    #     print
+    #     pprint(response_from_postmates_dictionary)
+    #     print
 
-        ################################# Create postmates request
-        #Create a Delivery
-        payload = {"quote_id": quote_id,
-                    "manifest": 1}
+    #     # print quote_id = response_from_postmates_dictionary['id']
 
-        # Flash success message or redirct user
-    return render_template("/rapid_small_giv.html")
+    #     ################################# Create postmates request
+    #     #Create a Delivery
+    #     payload_delivery = {"quote_id": quote_id,
+    #                 "manifest": manifest,
+    #                 "manifest_reference": manifest_reference,
+    #                 "pickup_name": restaurant["name"],
+    #                 "pickup_address": restaurant["address"],
+    #                 "pickup_latitude": restaurant["long_lat"][1],
+    #                 "pickup_longitude":restaurant["long_lat"][0],
+    #                 "pickup_business_name": restaurant["name"],
+    #                 "pickup_notes": ,
+    #                 "dropoff_name": notes,
+    #                 "dropoff_address": full_address,
+    #                 "dropoff_latitude": ,
+    #                 "dropoff_longitude": ,
+    #                 "dropoff_phone_number": "N/A",
+    #                 "dropoff_business_name": "N/A",
+    #                 "dropoff_notes": "if individual is not there then:", "alt_choice description", "shelter",
+    #                 "requires_id": "false",
+    #                 "pickup_ready_dt": ,
+    #                 "pickup_deadline_dt",
+    #                 "dropoff_ready_dt": ,
+    #                 "dropoff_deadline_dt": ,
+    #                 }
+
+    #     response_from_postmates_delivery = requests.post("https://api.postmates.com/v1/customers/cus_Lk1phJYn_uU88V/delivery_quotes", data=payload, auth=("a03e8608-cf6b-4441-ade2-696e2c437d6c", ''))
+    #     response_from_postmates_dictionary_delivery = response_from_postmates.json()
+    #     print
+    #     data = pprint(response_from_postmates_dictionary_delivery)
+    #     print
+    #     # Flash success message or redirct user
+    return render_template("/rapid_small_giv.html", data)
 
 
 
