@@ -8,6 +8,7 @@ from flask import (Flask, render_template, redirect, request, flash,
 from model import connect_to_db, db, Givr, Alt_choice, Giv, Recipient,Recipient_org
 from flask_debugtoolbar import DebugToolbarExtension
 import requests
+import random
 from requests.auth import HTTPBasicAuth
 from pprint import pprint
 
@@ -367,10 +368,7 @@ def rapid_giv():
                         ["Pad Thai", 11.95]],
                "delivery_fee": 3.99}
 
-
-
-    def manifest(dictionary):
-        pass
+    famous_inventors_of_color = ["Madam C.J. Walker", "George Washington Carver", "Thomas L. Jennings"]
 
     if request.method == "POST":
         # Get Form Data (giv_size and address)
@@ -382,8 +380,8 @@ def rapid_giv():
 
         full_address = "{}, {}, {} {}".format(address, city, state, zipcode)
         print "full_address: ", full_address
-        notes = "Please deliver food to visibly homeless individual in or near this location."
-
+        pickup_notes = "Please make sure that the order includes eating utensils and napkins."
+        dropoff_notes = "Please deliver to visibly homeless individual in front of addresss or very close to address. "
         # Get giv amount from user object's attributes
 
 
@@ -405,8 +403,25 @@ def rapid_giv():
 
         ################################# Create postmates request
         #Create a Delivery
-        payload = {"quote_id": quote_id,
-                    "manifest": 1}
+        payload_delivery = {"quote_id": quote_id,
+                            "manifest": restaurant["items"][4],
+                            "manifest_reference": random.choice(famous_inventors_of_color),
+                            "pickup_name": ,
+                            "pickup_address": restaurant["name"],
+                            "pickup_latitude": restaurant["long_lat"][1],
+                            "pickup_longitude": restaurant["long_lat"][0],
+                            "pickup_phone_number": restaurant["phone"],
+                            "pickup_business_name": restaurant["name"],
+                            "pickup_notes": pickup_notes,
+                            "dropoff_name": "unknown",
+                            "dropoff_address": full_address,
+                            "dropoff_latitude": ,
+                            "dropoff_longitude": ,
+                            "dropoff_phone_number": "N/A",
+                            "dropoff_business_name": ,
+                            "dropoff_notes": dropoff_notes,
+                            "requires_id": "false",
+                            }
 
         # Flash success message or redirct user
     return render_template("/rapid_small_giv.html")

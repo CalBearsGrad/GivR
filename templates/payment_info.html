@@ -12,12 +12,12 @@
     <br>
     <br>
     <label>16 digit credit card number</label>
-    <input type="password" maxlength="16" class="form-control" name="creditcardnum" id="creditcardnum" placeholder="no spaces or dashes    (required)" required>
+    <input type="password" maxlength="16" class="form-control" name="creditcardnum" id="CardNumber" placeholder="no spaces or dashes    (required)" required>
     <br>
     <label>credit card expiration date</label>
-    <input type="text" class="form-control" name="creditcardexp" id="creditcardexp" placeholder="MM/YY   (required)" required>
+    <input type="text" class="form-control" name="creditcardexp" id="creditcardexp" pattern="[0-2._%+-]{1}+[0-9.-]{1}+\\[1-2._%+-]{1}+[0-9.-]{1}$" title="Please enter a valid expiration date" placeholder="MM/YY   (required)" required>
     <br>
-    <input type="password number" class="form-control" name="creditcardccv" id="creditcardccv" placeholder="ccv" required>
+    <input type="password" maxlength="3" class="form-control" name="creditcardccv" id="creditcardccv" placeholder="ccv" required>
     <br>
     <small  class="form-text text-muted">You can always change your credit card info by selecting preferences from the menu.</small>
   </div>
@@ -25,5 +25,56 @@
 </form>
 
 </div>
+<script type="text/javascript">
+function testCreditCard() {
+  myCardNo = document.getElementById('CardNumber').value;
+  myCardType = document.getElementById('CardType').value;
+  if (checkCreditCard(myCardNo, myCardType)) {
+    alert("Credit card has a valid format")
+  } else {
+    alert(ccErrors[ccErrorNo])
+  };
+}
+
+
+<table>
+  <tbody>
+    <tr>
+      <td style="padding-right: 30px;">American Express</td>
+      <td>3400 0000 0000 009</td>
+    </tr>
+    <tr>
+      <td>Discover</td>
+      <td>6011 0000 0000 0004</td>
+    </tr>
+    <tr>
+      <td>MasterCard</td>
+      <td>5500 0000 0000 0004</td>
+    </tr>
+    <tr>
+      <td>Visa</td>
+      <td>4111 1111 1111 1111</td>
+    </tr>
+  </tbody>
+</table>
+<hr /> Card Number:
+<select tabindex="11" id="CardType" style="margin-left: 10px;">
+  <option value="AmEx">American Express</option>
+  <option value="CarteBlanche">Carte Blanche</option>
+  <option value="DinersClub">Diners Club</option>
+  <option value="Discover">Discover</option>
+  <option value="EnRoute">enRoute</option>
+  <option value="JCB">JCB</option>
+  <option value="Maestro">Maestro</option>
+  <option value="MasterCard">MasterCard</option>
+  <option value="Solo">Solo</option>
+  <option value="Switch">Switch</option>
+  <option value="Visa">Visa</option>
+  <option value="VisaElectron">Visa Electron</option>
+  <option value="LaserCard">Laser</option>
+</select> <input type="text" id="CardNumber" maxlength="24" size="24" style="margin-left: 10px;"> <button id="mybutton" type="button" onclick="testCreditCard();" style="margin-left: 10px; color: #f00;">Check</button>
+
+<p style="color: red; font-size: 10px;">
+</script>
 
     {% endblock %}
