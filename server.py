@@ -28,11 +28,22 @@ app.jinja_env.undefined = StrictUndefined
 
 
 @app.route('/')
-def index():
+def homepage():
     """Homepage, registration form and log-in."""
 
     return render_template("homepage.html")
 
+@app.route('/terms_of_service')
+def terms_of_use():
+    """ Renders the terms of service"""
+
+    return render_template("terms_of_service.html")
+
+@app.route('/privacy_policy')
+def privacy_policy():
+    """ Renders the privacy policy"""
+
+    return render_template("privacy_policy.html")
 
 @app.route('/preferences-basic-info', methods=["POST", "GET"])
 def preferences_basic_info():
@@ -406,7 +417,7 @@ def rapid_giv():
         payload_delivery = {"quote_id": quote_id,
                             "manifest": restaurant["items"][4],
                             "manifest_reference": random.choice(famous_inventors_of_color),
-                            "pickup_name": ,
+                            "pickup_name": restaurant["name"],
                             "pickup_address": restaurant["name"],
                             "pickup_latitude": restaurant["long_lat"][1],
                             "pickup_longitude": restaurant["long_lat"][0],
@@ -415,17 +426,24 @@ def rapid_giv():
                             "pickup_notes": pickup_notes,
                             "dropoff_name": "unknown",
                             "dropoff_address": full_address,
-                            "dropoff_latitude": ,
-                            "dropoff_longitude": ,
+                            "dropoff_latitude": "N/A",
+                            "dropoff_longitude": "N/A",
                             "dropoff_phone_number": "N/A",
-                            "dropoff_business_name": ,
+                            "dropoff_business_name": "N/A",
                             "dropoff_notes": dropoff_notes,
                             "requires_id": "false",
                             }
+        print "payload_delivery: ", payload_delivery
+
+        response_from_postmates_delivery = requests.post("https://api.postmates.com/v1/customers/cus_Lk1phJYn_uU88V/delivery_quotes", data=payload, auth=("a03e8608-cf6b-4441-ade2-696e2c437d6c", ''))
+        response_from_postmates_dictionary = response_from_postmates.json()
+        print
+        pprint(response_from_postmates_dictionary)
+        print
+        print response_from_postmates_dictionary['currency']
 
         # Flash success message or redirct user
     return render_template("/rapid_small_giv.html")
-
 
 
 
