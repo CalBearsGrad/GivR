@@ -1,10 +1,7 @@
 """Utility file to seed Givr database from seed_recipients and seed_recipient_orgs data in seed_data/"""
 
 from sqlalchemy import func
-from model import Givr
-from model import Recipient
-from model import Recipient_org
-from model import Alt_choice
+from model import Givr, Recipient, Recipient_org, Alt_choice, Restaurant, Item
 from datetime import datetime
 
 from model import connect_to_db, db
@@ -96,6 +93,46 @@ def load_recipients():
     db.session.commit()
 
 
+def load_restaurants():
+    """Load restaurants from seed_restaurants into database."""
+
+    print "Restaurants"
+
+    Restaurant.query.delete()
+
+    for row in open("seed/seed_restaurants.txt"):
+
+        row = row.rstrip()
+        restaurant_id, name, address, delivery_fee = row.split("|")
+
+        restaurant = Restaurant(restaurant_id=restaurant_id,
+                              name=name,
+                              address=address,
+                              delivery_fee=delivery_fee)
+
+        db.session.add(restaurant)
+
+    db.session.commit()
+
+
+def load_items():
+    """ Load Items from seed_items into database"""
+
+    print "Items"
+
+    Item.query.delete()
+
+    for row in open("seed/seed_items.txt"):
+
+        row = row.rstrip()
+        item_id, restaurant_id, name, price = row.split("|")
+
+        item = Item(item_id=item_id, restaurant_id=restaurant_id, name=name, price=price)
+
+        db.session.add(item)
+
+    db.session.commit()
+
 def load_recipient_orgs():
     """Load recipient_orgs from seed_recipient_orgs into database."""
 
@@ -128,5 +165,7 @@ if __name__ == "__main__":
     # Import different types of data
     load_alt_choice()
     load_givrs()
+    load_items()
+    load_restaurants()
     load_recipients()
     load_recipient_orgs()

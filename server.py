@@ -5,7 +5,7 @@ from datetime import datetime
 
 from flask import (Flask, render_template, redirect, request, flash,
                    session)
-from model import connect_to_db, db, Givr, Alt_choice, Giv, Recipient,Recipient_org
+from model import connect_to_db, db, Givr, Alt_choice, Giv, Recipient, Recipient_org, Restaurant, Item
 from flask_debugtoolbar import DebugToolbarExtension
 import requests
 import random
@@ -108,6 +108,9 @@ def check_user():
     # user_email = reference_email.email
 
     if reference_email:
+        print
+        print "Email address matches GivrR in database"
+        print
         session.clear()
         session['email'] = email
         session['password'] = password
@@ -379,6 +382,9 @@ def rapid_giv():
                         ["Pad Thai", 11.95]],
                "delivery_fee": 3.99}
 
+    restaurant_one = Restaurant.query.all().first()
+    print restaurant_one
+
     famous_inventors_of_color = ["Madam C.J. Walker", "George Washington Carver", "Thomas L. Jennings"]
 
     if request.method == "POST":
@@ -459,4 +465,4 @@ if __name__ == "__main__":
     # Use the DebugToolbar
     DebugToolbarExtension(app)
 
-    app.run(port=5000, host='0.0.0.0')
+    app.run(port=5001, host='0.0.0.0')
