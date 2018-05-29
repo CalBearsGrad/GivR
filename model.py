@@ -87,8 +87,8 @@ class Giv(db.Model):
                                    self.time_of_order, self.requested_destination)
 
     #Define relationship to Givs
-    giver = db.relationship("Givr", backref=db.backref("gives", order_by=givr_id))
-    restaurants = db.relationship("Restaurant", backref=db.backref("gives", order_by=restaurant_id))
+    giver = db.relationship("Givr", backref=db.backref("givs", order_by=givr_id))
+    restaurant = db.relationship("Restaurant", backref=db.backref("givs", order_by=restaurant_id))
 
 
 class Restaurant(db.Model):

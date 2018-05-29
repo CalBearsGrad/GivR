@@ -5,7 +5,7 @@ from datetime import datetime
 
 from flask import (Flask, render_template, redirect, request, flash,
                    session)
-from model import connect_to_db, db, Givr, Alt_choice, Giv, Recipient, Recipient_org, Restaurant, Item
+from model import connect_to_db, db, Givr, Alt_choice, Giv, Recipient,Recipient_org, Restaurant, Item
 from flask_debugtoolbar import DebugToolbarExtension
 import requests
 import random

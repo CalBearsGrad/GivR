@@ -165,7 +165,7 @@ if __name__ == "__main__":
     # Import different types of data
     load_alt_choice()
     load_givrs()
-    load_items()
     load_restaurants()
+    load_items()
     load_recipients()
     load_recipient_orgs()
