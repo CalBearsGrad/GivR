@@ -353,6 +353,48 @@ def log_out():
 
     return redirect("/")
 
+#function to choose the closest restaurant in the restaurants table to the drop off address provided
+def find_closest_restaurant():
+   if Restaurant.query.count() > 0:
+        closest_restaurant = Restaurant.query.first()
+        # restaurants = Restaurant.query.all()
+        # restaurant = Restaurant.query.one()
+
+        # for restaurant in restaurants:
+        #     #if restaurant distance from full_address is less than closest_restaurant.address
+        #     if restaurant.address()
+        #         closest_restaurant = restaurant
+        print closest_restaurant
+        return closest_restaurant
+
+#function to find the item that, when combined with tax and delivery fee, is equal to or less than the small giv amount that the user provided
+def find_match_name(closest_restaurant, giv_amount):
+
+    items = Item.query.filter(Item.restaurant_id == closest_restaurant.restaurant_id and (1.085 *(Item.price + delivery_fee)) < giv_amount).all()
+
+    #if there are indeed items in our Items table
+    if items:
+        item = items[0]
+        delivery_fee = closest_restaurant.delivery_fee
+        best_price_match = 1.085 * (item.price + delivery_fee)
+        best_match_name = item.name
+        #if there is a perfect match between giv amount and the best_price_match
+        if giv_amount == best_price_match:
+            return best_match_name
+
+        #if the small giv amount that the user chose is more than or less than best_price_match
+        elif giv_amount > best_price_match or giv_amount < best_price_match:
+            #then, iterate through the rows of item.prices in Items table
+            for item in items:
+                #if the cost of the item with tax and delivery is closer to the giv_amount than the best_price_match with out going over
+                #How can I guard against for negative amounts misleading my compiler?
+                if (giv_amount - (1.085 *(item.price + delivery_fee))) < (giv_amount - best_price_match):
+                    #then the new best_price_match is the new item price
+                    best_price_match = item.price
+                    best_match_name = item.name
+
+            return best_match_name
+
 
 @app.route("/rapid_small_giv", methods=['POST', 'GET'])
 def rapid_giv():
@@ -365,31 +407,14 @@ def rapid_giv():
     session["giv_amount"] = giv_amount
     # giv_size = request.args.get("smallgiv")
 
-    restaurant = {"name": "Lers Ros Thai",
-              "address": "307 Hayes St, San Francisco, CA 94102",
-              "long_lat": "37.776997, -122.421683",
-              "items": [["Jasmine Steamed Rice", 2.00],
-                        ["Sticky Rice", 2.50],
-                        ["Brown Rice", 2.50],
-                        ["Steamed Rice Noodle", 3.00],
-                        ["Cucumber Salad", 3.95],
-                        ["Sweet Sticky Rice", 4.95],
-                        ["Brown Rice & Peanut Sauce", 6.45],
-                        ["Jasmine Steamed Rice & Peanut Sauce", 5.95],
-                        ["Steamed Rice Noodle & Peanut Sauce", 6.95],
-                        ["Pad Kee Moo", 11.95],
-                        ["Pad See Ew", 11.95],
-                        ["Pad Thai", 11.95]],
-               "delivery_fee": 3.99}
-
-    restaurant_one = Restaurant.query.all().first()
-    print restaurant_one
 
     famous_inventors = ["Thomas L. Jennings", "Mark E. Dean", "Madam C.J. Walker", "Dr. Shirely Jackson",
                         "Charles Richard Dew", "Marie Van Brittan Brown", "George Carruthers", "Dr. Patricia Bath",
                         "Jan E. Matzeliger", "Alexander Miles"]
+
     if request.method == "POST":
         # Get Form Data (giv_size and address)
+
 
         address = request.form.get("address")
         city = request.form.get("city")
@@ -400,14 +425,15 @@ def rapid_giv():
         print "full_address: ", full_address
         pickup_notes = "Please make sure that the order includes eating utensils and napkins."
         dropoff_notes = "Please deliver to visibly homeless individual in front of addresss or very close to address. "
-        # Get giv amount from user object's attributes
 
+        closest_restaurant = find_closest_restaurant()
 
+        best_match_name = find_match_name(closest_restaurant, giv_amount)
 
         ################################# Create postmates request
         #Delivery Quotes
         payload = {"dropoff_address": full_address,
-                    "pickup_address": "307 Hayes St, San Francisco, CA 94102"}
+                    "pickup_address": closest_restaurant.address}
 
         print "payload: ", payload
 
@@ -417,19 +443,17 @@ def rapid_giv():
         pprint(response_from_postmates_dictionary)
         print
         print response_from_postmates_dictionary['currency']
-        # print quote_id = response_from_postmates_dictionary['id']
+        quote_id = response_from_postmates_dictionary['id']
 
         ################################# Create postmates request
         #Create a Delivery
         payload_delivery = {"quote_id": quote_id,
-                            "manifest": restaurant["items"][4],
-                            "manifest_reference": random.choice(famous_inventors_of_color),
-                            "pickup_name": restaurant["name"],
-                            "pickup_address": restaurant["name"],
-                            "pickup_latitude": restaurant["long_lat"][1],
-                            "pickup_longitude": restaurant["long_lat"][0],
-                            "pickup_phone_number": restaurant["phone"],
-                            "pickup_business_name": restaurant["name"],
+                            "manifest": best_match_name,
+                            "manifest_reference": random.choice(famous_inventors) + "1234", #how to auto increment the order number?
+                            "pickup_name": closest_restaurant.name,
+                            "pickup_address": closest_restaurant.address,
+                            "pickup_phone_number": "510-866-4577",
+                            "pickup_business_name": closest_restaurant.name,
                             "pickup_notes": pickup_notes,
                             "dropoff_name": "unknown",
                             "dropoff_address": full_address,
@@ -442,12 +466,15 @@ def rapid_giv():
                             }
         print "payload_delivery: ", payload_delivery
 
-        response_from_postmates_delivery = requests.post("https://api.postmates.com/v1/customers/cus_Lk1phJYn_uU88V/delivery_quotes", data=payload, auth=("a03e8608-cf6b-4441-ade2-696e2c437d6c", ''))
+        #all of this needs updating
+        response_from_postmates_delivery = requests.post("https://api.postmates.com/v1/customers/cus_Lk1phJYn_uU88V/delivery", data=payload_delivery, auth=("a03e8608-cf6b-4441-ade2-696e2c437d6c", ''))
         response_from_postmates_dictionary = response_from_postmates.json()
         print
         pprint(response_from_postmates_dictionary)
         print
-        print response_from_postmates_dictionary['currency']
+
+        giv =
+
 
         # Flash success message or redirct user
     return render_template("/rapid_small_giv.html")
