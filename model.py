@@ -58,6 +58,7 @@ class Giv(db.Model):
 
     giv_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     givr_id = db.Column(db.Integer, db.ForeignKey("givrs.givr_id"))
+    restaurant_id = db.Column(db.Integer, db.ForeignKey("restaurants.restaurant_id"))
     date_of_order = db.Column(db.DateTime, nullable=False)
     time_of_order = db.Column(db.DateTime, nullable=False)
     date_of_delivery = db.Column(db.DateTime, nullable=False)
@@ -86,7 +87,47 @@ class Giv(db.Model):
                                    self.time_of_order, self.requested_destination)
 
     #Define relationship to Givs
-    gives = db.relationship("Givr", backref=db.backref("gives", order_by=givr_id))
+    giver = db.relationship("Givr", backref=db.backref("givs", order_by=givr_id))
+    restaurant = db.relationship("Restaurant", backref=db.backref("givs", order_by=restaurant_id))
+
+
+class Restaurant(db.Model):
+    """List of Restaurants."""
+
+    __tablename__ = "restaurants"
+
+    restaurant_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    address = db.Column(db.String(100), nullable=False)
+    delivery_fee = db.Column(db.Float, nullable=False)
+
+
+    def __repr__(self):
+        """Provide helpful representation when printed
+        """
+
+        return "<Restaurant restaurant_id={} name={} address={}\
+        delivery_fee={}>".format(self.restaurant_id, self.name, self.address, self.delivery_fee)
+
+class Item(db.Model):
+    """List of Items."""
+
+    __tablename__ = "items"
+
+    item_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    restaurant_id = db.Column(db.Integer, db.ForeignKey("restaurants.restaurant_id"))
+    name = db.Column(db.String(100), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+   
+
+    def __repr__(self):
+        """Provide helpful representation when printed
+        """
+
+        return "<Item item_id={} restaurant_id={} name={} price={}>".format(self.item_id ,self.restaurant_id ,self.name ,self.price)
+
+    #backre relationship to the restaurants table
+    restaurants = db.relationship("Restaurant", backref=db.backref("items", order_by=restaurant_id))
 
 class Alt_choice(db.Model):
     """A rating of a movie; stored in a database."""
