@@ -60,16 +60,11 @@ class Giv(db.Model):
     givr_id = db.Column(db.Integer, db.ForeignKey("givrs.givr_id"))
     restaurant_id = db.Column(db.Integer, db.ForeignKey("restaurants.restaurant_id"))
     date_of_order = db.Column(db.DateTime, nullable=False)
-    time_of_order = db.Column(db.DateTime, nullable=False)
     date_of_delivery = db.Column(db.DateTime, nullable=False)
-    time_of_delivery = db.Column(db.DateTime, nullable=False)
     requested_destination = db.Column(db.String(100), nullable=False)
     actual_destination = db.Column(db.String(100), nullable=False)
     total_amount = db.Column(db.Float, nullable=False)
     restaurant = db.Column(db.String(50), nullable=False)
-    subtotal = db.Column(db.Integer, nullable=False)
-    tax = db.Column(db.Float, nullable=False)
-    tip = db.Column(db.Float, nullable=False)
     successful_delivery = db.Column(db.Boolean, nullable=False)
     recipient_id = db.Column(db.Integer, db.ForeignKey("recipients.recipient_id"))
     size = db.Column(db.String(10), nullable=False)
@@ -79,12 +74,21 @@ class Giv(db.Model):
         """Provide helpful representation when printed
         """
 
-        return "<Giv giv_id={} givr_id={} date_of_order={} time_of_order={}\
-        date_of_delivery={} time_of_order={} requested_destination={}\
-        actual_destination={} total_amount={} restaurant_used={} subtotal={}\
-        tax={} tip={} successful_delivery={} recipient_id={} size={} tax_exempt={}\
-        big_giv_amount={}>".format(self.giv_id, self.givr_id, self.date_of_order,
-                                   self.time_of_order, self.requested_destination)
+        return "<Giv giv_id={} givr_id={} restaurant_id={} date_of_order={}\
+        date_of_order={} date_of_delivery={} requested_destination={}\
+        actual_destination={} total_amount={} restaurant={}\
+        successful_delivery={} recipient_id={} size={} tax_exempt={}>".format(self.giv_id,
+                                                                              self.givr_id,
+                                                                              self.date_of_order,
+                                                                              self.date_of_delivery,
+                                                                              self.requested_destination,
+                                                                              self.actual_destination,
+                                                                              self.total_amount,
+                                                                              self.restaurant,
+                                                                              self.successful_delivery,
+                                                                              self.recipient_id,
+                                                                              self.size,
+                                                                              self.tax_exempt)
 
     #Define relationship to Givs
     giver = db.relationship("Givr", backref=db.backref("givs", order_by=givr_id))
@@ -118,7 +122,7 @@ class Item(db.Model):
     restaurant_id = db.Column(db.Integer, db.ForeignKey("restaurants.restaurant_id"))
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
-   
+
 
     def __repr__(self):
         """Provide helpful representation when printed

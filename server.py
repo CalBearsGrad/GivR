@@ -393,7 +393,7 @@ def find_match_name(closest_restaurant, giv_amount):
                     best_price_match = item.price
                     best_match_name = item.name
 
-            return best_match_name
+            return best_match_name, best_price_match
 
 
 @app.route("/rapid_small_giv", methods=['POST', 'GET'])
@@ -428,7 +428,7 @@ def rapid_giv():
 
         closest_restaurant = find_closest_restaurant()
 
-        best_match_name = find_match_name(closest_restaurant, giv_amount)
+        best_match_name, best_price_match = find_match_name(closest_restaurant, giv_amount)
 
         ################################# Create postmates request
         #Delivery Quotes
@@ -449,7 +449,7 @@ def rapid_giv():
         #Create a Delivery
         payload_delivery = {"quote_id": quote_id,
                             "manifest": best_match_name,
-                            "manifest_reference": random.choice(famous_inventors) + "1234", #how to auto increment the order number?
+                            "manifest_reference": random.choice(famous_inventors) + " " + quote_id, #how to auto increment the order number?
                             "pickup_name": closest_restaurant.name,
                             "pickup_address": closest_restaurant.address,
                             "pickup_phone_number": "510-866-4577",
@@ -457,9 +457,7 @@ def rapid_giv():
                             "pickup_notes": pickup_notes,
                             "dropoff_name": "unknown",
                             "dropoff_address": full_address,
-                            "dropoff_latitude": "N/A",
-                            "dropoff_longitude": "N/A",
-                            "dropoff_phone_number": "N/A",
+                            "dropoff_phone_number": "888-712-9985",
                             "dropoff_business_name": "N/A",
                             "dropoff_notes": dropoff_notes,
                             "requires_id": "false",
@@ -467,17 +465,69 @@ def rapid_giv():
         print "payload_delivery: ", payload_delivery
 
         #all of this needs updating
-        response_from_postmates_delivery = requests.post("https://api.postmates.com/v1/customers/cus_Lk1phJYn_uU88V/delivery", data=payload_delivery, auth=("a03e8608-cf6b-4441-ade2-696e2c437d6c", ''))
-        response_from_postmates_dictionary = response_from_postmates.json()
+        response_from_postmates_delivery = requests.post("https://api.postmates.com/v1/customers/cus_Lk1phJYn_uU88V/deliveries", data=payload_delivery, auth=("a03e8608-cf6b-4441-ade2-696e2c437d6c", ''))
+        response_from_postmates_dictionary = response_from_postmates_delivery.json()
         print
         pprint(response_from_postmates_dictionary)
         print
 
-        giv =
+        """Instantiating a new giv """
+        print "Getting ready to instantiate a new giv"
+
+        manifest_reference = payload_delivery["manifest_reference"]
+        tracking_url = response_from_postmates_dictionary["tracking_url"]
+        date_of_order = response_from_postmates_dictionary["created"]
+        date_of_delivery = response_from_postmates_dictionary["dropoff_eta"]
+        requested_destination = payload_delivery["dropoff_address"]
+        actual_destination = payload_delivery["dropoff_address"]
+        total_amount = best_price_match
+        successful_delivery = True
+        size = "small"
+        tax_exempt = False
+        restaurant = Restaurant.query.filter_by(name=closest_restaurant).first()
+
+        giv = Giv(givr_id=user.givr_id,
+                  restaurant_id=restaurant.restaurant_id,
+                  date_of_order=date_of_order,
+                  date_of_delivery=date_of_delivery,
+                  requested_destination=requested_destination,
+                  actual_destination=actual_destination,
+                  total_amount=total_amount,
+                  successful_delivery=successful_delivery,
+                  size=size,
+                  tax_exempt=tax_exempt)
+
+        print "I am date_of_order", date_of_order
+        print "I am date_of_delivery", date_of_delivery
+        print "I am requested_destination", requested_destination
+        print "I am actual_destination", actual_destination
+        print "I am total_amount", total_amount
+        print "I am successful_delivery", successful_delivery,
+        print "I am size", size
+        print "I am tax_exempt", tax_exempt
+
+        db.session.add(giv)
+        db.session.commit()
+
+        print "We created a new Giv!"
+
+        flash("You have successfully created a delivery.")
+
+        return redirect("/track_order", manifest_reference=manifest_reference,
+                                        fname=fname,
+                                        tracking_url=tracking_url)
+
 
 
         # Flash success message or redirct user
     return render_template("/rapid_small_giv.html")
+
+@app.route("/track_order")
+def track_order():
+    """allow user to track delivery."""
+
+
+    return render_template("track_order.html")
 
 
 
