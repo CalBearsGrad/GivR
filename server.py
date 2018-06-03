@@ -96,9 +96,8 @@ def check_user():
     """
 
     print "I am in check-user route"
-
-    email = request.form.get("email")
-    password = request.form.get("password")
+    email = session['email']
+    password = session['password']
 
     print email
     print password
@@ -128,10 +127,12 @@ def preferences_small_giv():
         """defining the user input that we are getting """
 
         smallgiv = request.form.get("smallgiv")
+        print "This is smallgiv: ", smallgiv
 
         if preferences_small_giv:
 
             session['smallgiv'] = smallgiv
+            print "This is smallgiv in session", smallgiv
 
             return redirect("/preferences-big-giv")
         else:
@@ -208,16 +209,49 @@ def payment_info():
         creditcardexp = datetime.strptime(creditcardexp, "%m/%y").strftime("%Y-%m-%d")
         print "I am new creditcardexp", creditcardexp
 
-        session['creditcardname'] = creditcardname
-        session['creditcardnum'] = creditcardnum
-        session['creditcardexp'] = creditcardexp
-        session['creditcardccv'] = creditcardccv
+        email = session["email"]
+        password = session["password"]
+        fname = session["fname"]
+        lname = session["lname"]
+        session["creditcardname"] = creditcardname
+        session["creditcardnum"] = creditcardnum
+        print "This is the type creditcardnum is", type(creditcardnum)
+        cardsuffix = (str(creditcardnum)[-4:])
+        session["creditcardexp"] = creditcardexp
+        session["creditcardccv"] = creditcardccv
+        smallgiv = session["smallgiv"]
+        biggiv = session["biggiv"]
+        alternate_choice = session["alternate_choice"]
+
+        def describe_alt_choice():
+            if alternate_choice == 1:
+                choice = "deliver to nearest visibly homeless individual"
+            elif alternate_choice == 2:
+                choice = "deliver to nearest 24hr homeless shelter"
+            elif alternate_choice == 3:
+                choice = "process a refund"
+
+            return choice
+
+        choice = describe_alt_choice()
 
         print "all credit card info is in session"
 
         if ("creditcardname" in session) and ("creditcardnum" in session) and ("creditcardexp" in session) and ("creditcardccv" in session):
 
-            return render_template("review_preferences.html")
+            return render_template("review_preferences.html", email=email,
+                                                   password=password,
+                                                   fname=fname,
+                                                   lname=lname,
+                                                   creditcardname=creditcardname,
+                                                   creditcardnum=creditcardnum,
+                                                   creditcardexp=creditcardexp,
+                                                   creditcardccv=creditcardccv,
+                                                   smallgiv=smallgiv,
+                                                   biggiv=biggiv,
+                                                   alternate_choice=alternate_choice,
+                                                   choice=choice,
+                                                   cardsuffix=cardsuffix)
         else:
             return render_template("payment_info.html")
 
@@ -227,6 +261,8 @@ def payment_info():
 @app.route('/review_preferences', methods=["POST", "GET"])
 def review_preferences():
     """Review GivR responses before instantiating user."""
+    print "In review preferences"
+
     email = session["email"]
     password = session["password"]
     fname = session["fname"]
@@ -262,27 +298,6 @@ def review_preferences():
                 creditcardname=creditcardname, creditcardnum=creditcardnum, creditcardexp=creditcardexp,
                 creditcardccv=creditcardccv, smallgiv=smallgiv, biggiv=biggiv, alt_choice_id=alternate_choice)
 
-          #   sql = """INSERT INTO givrs (email, password, fname, lname, creditcardname, creditcardexp,
-          #       creditcardccv, smallgiv, biggiv, alternate_choice)
-          #    VALUES (:email, :password, :fname, :lname, :creditcardname, :creditcardexp,
-          #       :creditcardccv, :smallgiv, :biggiv, :alternate_choice)
-          # """
-
-          #   db.session.execute(sql,
-          #              {'email': email,
-          #               'password': password,
-          #               'fname': fname,
-          #               'lname': lname,
-          #               'creditcardname': creditcardname,
-          #               'creditcardnum': creditcardnum,
-          #               'creditcardexp': creditcardexp,
-          #               'creditcardccv': creditcardccv,
-          #               'smallgiv': smallgiv,
-          #               'biggiv': biggiv,
-          #               'alternate_choice': alternate_choice})
-
-          #   db.session.commit()
-
             print "I am email", email
             print "I am password", password
             print "I am fname", fname
@@ -303,6 +318,24 @@ def review_preferences():
             flash("You have registered successfully")
 
             return redirect("/welcome-givr")
+        else:
+            print
+            print "Something is wrong"
+            print "***************"
+            print "See what is missing"
+            print "*******************"
+
+            print "I am email", email
+            print "I am password", password
+            print "I am fname", fname
+            print "I am lname", lname
+            print "I am creditcardname", creditcardname
+            print "I am creditcardnum", creditcardnum
+            print "I am creditcardexp", creditcardexp
+            print "I am creditcardccv", creditcardccv
+            print "I am smallgiv", smallgiv
+            print "I am biggiv", biggiv
+            print "I am alternate_choice", alternate_choice
 
 
     return render_template("review_preferences.html", smallgiv=smallgiv,
@@ -317,7 +350,8 @@ def welcome_givr():
 
     email = session["email"]
     user = Givr.query.filter_by(email=email).first()
-    fname = user.fname
+    print "This is user", user
+    fname = session["fname"]
 
     return render_template("welcome-givr.html", fname=fname)
 
@@ -427,6 +461,9 @@ def rapid_giv():
         dropoff_notes = "Please deliver to visibly homeless individual in front of addresss or very close to address. "
 
         closest_restaurant = find_closest_restaurant()
+        print "*****************************closest_restaurant: \n"
+        print type(closest_restaurant)
+        print closest_restaurant
 
         best_match_name, best_price_match = find_match_name(closest_restaurant, giv_amount)
 
@@ -482,9 +519,11 @@ def rapid_giv():
         actual_destination = payload_delivery["dropoff_address"]
         total_amount = best_price_match
         successful_delivery = True
+        # recipient_id =
         size = "small"
         tax_exempt = False
-        restaurant = Restaurant.query.filter_by(name=closest_restaurant).first()
+        restaurant = Restaurant.query.filter_by(name=closest_restaurant.name).first()
+        print restaurant.restaurant_id
 
         giv = Giv(givr_id=user.givr_id,
                   restaurant_id=restaurant.restaurant_id,

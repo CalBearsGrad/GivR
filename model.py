@@ -22,6 +22,7 @@ class Givr(db.Model):
     password = db.Column(db.String(64), nullable=False)
     fname = db.Column(db.String(20), nullable=False)
     lname = db.Column(db.String(20), nullable=False)
+    creditcardtype = db.Column(db.String, nullable=False)
     creditcardname = db.Column(db.String(50), nullable=False)
     creditcardnum = db.Column(db.String(16), nullable=False)
     creditcardexp = db.Column(db.DateTime, nullable=False)
@@ -36,11 +37,11 @@ class Givr(db.Model):
         """
 
         return "<GivR givr_id={} email={} password={} fname={}\
-        lname={} creditcardname={} creditcardnum={} creditcardexp={}\
+        lname={} creditcardtype={} creditcardname={} creditcardnum={} creditcardexp={}\
         creditcardccv={} smallgiv={}\
         biggiv={} alt_choice_id={}>".format(self.givr_id, self.email,
                                    self.password, self.fname,
-                                   self.lname, self.creditcardname,
+                                   self.lname, self.creditcardtype, self.creditcardname,
                                    self.creditcardexp, self.creditcardccv,
                                    self.small_giv_amount,
                                    self.big_giv_amount, self.alt_choice_id)
@@ -60,9 +61,9 @@ class Giv(db.Model):
     givr_id = db.Column(db.Integer, db.ForeignKey("givrs.givr_id"))
     restaurant_id = db.Column(db.Integer, db.ForeignKey("restaurants.restaurant_id"))
     date_of_order = db.Column(db.DateTime, nullable=False)
-    date_of_delivery = db.Column(db.DateTime, nullable=False)
+    date_of_delivery = db.Column(db.DateTime, nullable=True)
     requested_destination = db.Column(db.String(100), nullable=False)
-    actual_destination = db.Column(db.String(100), nullable=False)
+    actual_destination = db.Column(db.String(100), nullable=True)
     total_amount = db.Column(db.Float, nullable=False)
     restaurant = db.Column(db.String(50), nullable=False)
     successful_delivery = db.Column(db.Boolean, nullable=False)

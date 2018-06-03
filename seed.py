@@ -41,7 +41,7 @@ def load_givrs():
     # Read u.user file and insert data
     for row in open("seed/seed_givrs"):
         row = row.rstrip()
-        (givr_id, email, password, fname, lname, creditcardname, creditcardnum,
+        (givr_id, email, password, fname, lname, creditcardtype, creditcardname, creditcardnum,
          creditcardexp, creditcardccv, smallgiv, biggiv, alt_choice_id) = row.split("|")
 
         # creditcardexp = datetime.strptime(creditcardexp, "%m/%y")
@@ -52,6 +52,7 @@ def load_givrs():
                     password=password,
                     fname=fname,
                     lname=lname,
+                    creditcardtype=creditcardtype,
                     creditcardname=creditcardname,
                     creditcardnum=creditcardnum,
                     creditcardexp=creditcardexp,
@@ -154,6 +155,8 @@ def load_recipient_orgs():
         db.session.add(recipient_org)
 
     db.session.commit()
+
+
 
 
 if __name__ == "__main__":
