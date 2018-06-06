@@ -83,7 +83,7 @@ def preferences_basic_info():
             ("fname" in session) and ("lname" in session)):
 
             print "email, password, fname and lname in session"
-            return redirect("/check-user")
+            return redirect("/check-user", email=email, password=password, fname=fname, lname=lname)
 
     else:
         print "This is a new entry"
@@ -96,9 +96,11 @@ def check_user():
     """
 
     print "I am in check-user route"
-    email = session['email']
-    password = session['password']
+    if ("email" in session) == None:
+            print "didn't get email"
 
+    email = session["email"]
+    password = session["email"]
     print email
     print password
 
