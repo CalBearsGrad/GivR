@@ -99,8 +99,10 @@ def check_user():
     if ("email" in session) == None:
             print "didn't get email"
 
-    email = session["email"]
-    password = session["email"]
+    email = request.form.get("email")
+
+    password = request.form.get("password")
+
     print email
     print password
 
@@ -353,7 +355,7 @@ def welcome_givr():
     email = session["email"]
     user = Givr.query.filter_by(email=email).first()
     print "This is user", user
-    fname = session["fname"]
+    fname = user.fname
 
     return render_template("welcome-givr.html", fname=fname)
 
@@ -554,7 +556,7 @@ def rapid_giv():
 
         flash("You have successfully created a delivery.")
 
-        return redirect("/track_order", manifest_reference=manifest_reference,
+        return render_template("track_order.html", manifest_reference=manifest_reference,
                                         fname=fname,
                                         tracking_url=tracking_url)
 

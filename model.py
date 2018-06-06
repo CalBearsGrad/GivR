@@ -42,9 +42,10 @@ class Givr(db.Model):
         biggiv={} alt_choice_id={}>".format(self.givr_id, self.email,
                                    self.password, self.fname,
                                    self.lname, self.creditcardtype, self.creditcardname,
+                                   self.creditcardnum,
                                    self.creditcardexp, self.creditcardccv,
-                                   self.small_giv_amount,
-                                   self.big_giv_amount, self.alt_choice_id)
+                                   self.smallgiv,
+                                   self.biggiv, self.alt_choice_id)
 
     #Define relationship to alt_choice
     preference = db.relationship("Alt_choice", uselist=False, backref=db.backref("givr"))
