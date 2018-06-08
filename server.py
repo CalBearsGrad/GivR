@@ -45,7 +45,7 @@ def privacy_policy():
 
     return render_template("privacy_policy.html")
 
-def correct_tax_deductile_givs():
+def correct_tax_deductible_givs():
     """Will find tax deductible givs and will
     change the value for "tax_exempt" to True"""
 
@@ -54,8 +54,13 @@ def correct_tax_deductile_givs():
     givs = Giv.query.filter_by(givr_id=user.givr_id).all()
 
     if givs:
-        if giv.recipient_id == 1 or giv.recipient_id == 2:
-            return giv.tax_exempt = True
+        for giv in givs:
+            if giv.recipient_id == 1 or giv.recipient_id == 2:
+                giv.tax_exempt = True
+                print giv
+
+        db.session.add(givs)
+        db.session.commit()
 
 
 def find_tax_deductible_givs(user):
@@ -66,11 +71,11 @@ def find_tax_deductible_givs(user):
 
     givs = Giv.query.filter_by(givr_id=user.givr_id).all()
 
-    total_tax_deductible_givs_for_givr = givs.query.filter_by(givs.tax_exempt=True).count()
+    # total_tax_deductible_givs_for_givr = givs.query.filter_by(givs.tax_exempt=True).count()
 
-    sum_tax_deductible_givs_for_givr = sum(givs.query.filter_by(givs.tax_exempt=True)).all()
+    # sum_tax_deductible_givs_for_givr = sum(givs.query.filter_by(givs.tax_exempt=True)).all()
 
-    average_of_tax_deductible_givs_for_givr = sum_tax_deductible_givs_for_givr / total_tax_deductible_givs_for_givr
+    # average_of_tax_deductible_givs_for_givr = sum_tax_deductible_givs_for_givr / total_tax_deductible_givs_for_givr
 
     return total_tax_deductible_givs_for_givr, sum_tax_deductible_givs_for_givr, average_of_tax_deductible_givs_for_givr
 
@@ -78,14 +83,14 @@ def find_tax_deductible_givs(user):
 def show_giv_history_over_time():
     """Will find tax deductible givs and will
     change the value for "tax_exempt" to True"""
+    correct_tax_deductible_givs()
 
+    find_tax_deductible_givs
     user = Givr.query.filter_by(email=email).first()
 
     givs = Giv.query.filter_by(givr_id=user.givr_id).all()
 
-    if givs:
-        if giv.recipient_id == 1 or giv.recipient_id == 2:
-            #Add up all
+    return render_template("giv_history.html")
 
 
 @app.route('/giv_history')
