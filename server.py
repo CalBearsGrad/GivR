@@ -45,6 +45,61 @@ def privacy_policy():
 
     return render_template("privacy_policy.html")
 
+def correct_tax_deductile_givs():
+    """Will find tax deductible givs and will
+    change the value for "tax_exempt" to True"""
+
+    user = Givr.query.filter_by(email=email).first()
+
+    givs = Giv.query.filter_by(givr_id=user.givr_id).all()
+
+    if givs:
+        if giv.recipient_id == 1 or giv.recipient_id == 2:
+            return giv.tax_exempt = True
+
+
+def find_tax_deductible_givs(user):
+    """Will find the total number of tax deductible givs,
+      will return the total amount,
+      and will find the average amount spent on Givs"""
+    user = Givr.query.filter_by(email=email).first()
+
+    givs = Giv.query.filter_by(givr_id=user.givr_id).all()
+
+    total_tax_deductible_givs_for_givr = givs.query.filter_by(givs.tax_exempt=True).count()
+
+    sum_tax_deductible_givs_for_givr = sum(givs.query.filter_by(givs.tax_exempt=True)).all()
+
+    average_of_tax_deductible_givs_for_givr = sum_tax_deductible_givs_for_givr / total_tax_deductible_givs_for_givr
+
+    return total_tax_deductible_givs_for_givr, sum_tax_deductible_givs_for_givr, average_of_tax_deductible_givs_for_givr
+
+
+def show_giv_history_over_time():
+    """Will find tax deductible givs and will
+    change the value for "tax_exempt" to True"""
+
+    user = Givr.query.filter_by(email=email).first()
+
+    givs = Giv.query.filter_by(givr_id=user.givr_id).all()
+
+    if givs:
+        if giv.recipient_id == 1 or giv.recipient_id == 2:
+            #Add up all
+
+
+@app.route('/giv_history')
+def giv_history():
+    """ Renders the user;s giv history"""
+
+    email = session["email"]
+
+    user = Givr.query.filter_by(email=email).first()
+
+    find_tax_deductible_givs()
+
+    return render_template("giv_history.html")
+
 @app.route('/preferences-basic-info', methods=["POST", "GET"])
 def preferences_basic_info():
     """allow GivR to register preference for Small Givs."""
