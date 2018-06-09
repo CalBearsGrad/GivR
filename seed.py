@@ -28,6 +28,27 @@ def load_alt_choice():
 
     db.session.commit()
 
+def load_givs():
+    """Load givs from seed_givs.txt into database."""
+
+    print "Givs"
+
+    Givs.query.delete()
+
+    for row in open("seed/seed_givs.txt"):
+
+        row = row.rstrip()
+        (giv_id, givr_id, restaurant_id, date_of_order, date_of_delivery,
+        requested_destination, actual_destination, total_amount,
+        successful_delivery, recipient_id, size, tax_exempt) = row.split("|")
+
+        recipient_org = Alt_choice(alt_choice_id=alt_choice_id,
+                                   description=description)
+
+        db.session.add(recipient_org)
+
+    db.session.commit()
+
 
 def load_givrs():
     """Load users from u.user into database."""
