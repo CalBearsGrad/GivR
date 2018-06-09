@@ -71,6 +71,18 @@ def find_tax_deductible_givs(user):
 
     givs = Giv.query.filter_by(givr_id=user.givr_id).all()
 
+    all_giv_count = 0
+    tax_exempt_givs = 0
+
+    for giv in givs:
+        all_giv_count += 1
+         if giv.tax_exempt == True
+            tax_exempt_givs += 1
+
+    return all_giv_count, tax_exempt_givs
+
+
+
     # total_tax_deductible_givs_for_givr = givs.query.filter_by(givs.tax_exempt=True).count()
 
     # sum_tax_deductible_givs_for_givr = sum(givs.query.filter_by(givs.tax_exempt=True)).all()
@@ -85,12 +97,12 @@ def show_giv_history_over_time():
     change the value for "tax_exempt" to True"""
     correct_tax_deductible_givs()
 
-    find_tax_deductible_givs
+    all_giv_count, tax_exempt_givs = find_tax_deductible_givs()
     user = Givr.query.filter_by(email=email).first()
 
     givs = Giv.query.filter_by(givr_id=user.givr_id).all()
 
-    return render_template("giv_history.html")
+    return render_template("giv_history.html", all_giv_count=all_giv_count, tax_exempt_givs=tax_exempt_givs)
 
 
 @app.route('/giv_history')
