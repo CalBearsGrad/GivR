@@ -94,8 +94,10 @@ def create_givs(addresses, givr_id, num_givs_per_address, start_date, end_date):
 
             size = "smallgiv"
 
-            tax_exempt = False
-
+            if requested_destination == "1001 Polk Street, San Francisco, California 94109" or requested_destination == "536 Central Avenue, San Francisco, California 94117":
+                tax_exempt = True
+            else:
+                tax_exempt = False
 
             giv = Giv(givr_id=givr_id,
                   restaurant_id=1,
@@ -266,5 +268,5 @@ if __name__ == "__main__":
     # load_items()
     # load_recipients()
     # load_recipient_orgs()
-    create_givs(("609 Market St, San Francisco, CA 94105", "301 Post St, San Francisco, CA 94108"),
-        000000003, 80, "01-01-2018 01:01:01", "06-09-2018 01:01:01")
+    create_givs(("536 Central Avenue, San Francisco, California 94117", "1001 Polk Street, San Francisco, California 94109"),
+        000000002, 60, "01-01-2018 01:01:01", "06-09-2018 01:01:01")

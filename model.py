@@ -81,6 +81,7 @@ class Giv(db.Model):
         actual_destination={} total_amount={} restaurant={}\
         successful_delivery={} recipient_id={} size={} tax_exempt={}>".format(self.giv_id,
                                                                               self.givr_id,
+                                                                              self.restaurant_id,
                                                                               self.date_of_order,
                                                                               self.date_of_delivery,
                                                                               self.requested_destination,

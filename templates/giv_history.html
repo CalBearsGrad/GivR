@@ -10,16 +10,21 @@
 <h2>How many Givs over time</h2>
 <br>
 
+<div>
 <br>
 <br>
 <h2>How many Givs were Tax Deductible</h2>
 <br>
-<span class="badge badge-pill badge-success">{{  }}</span>
+<span class="badge badge-pill badge-success"></span>
+    <div class="giv-history-chart">
+        <canvas id="donutChart"></canvas>
+        <div id="donutLegend" class="chart-legend"></div>
+    </div>
 <br>
 <br>
 <h2>Average Amount spent on Givs</h2>
 <br>
-<span class="badge badge-pill badge-success">{{  }}</span>
+<span class="badge badge-pill badge-success"></span>
 <br>
 <br>
 <h2>You are a GivR in these neighborhoods</h2>
@@ -29,29 +34,14 @@
 <br>
 <br>
 <script type="text/javascript">
-data = {
-    datasets: [{
-        data: [{{  all_giv_count }}, {{  tax_exempt_givs }}]
-    }],
 
-    // These labels appear in the legend and in the tooltips when hovering different arcs
-    labels: [
-        'Red',
-        'Blue'
-    ]
-};
 
-var myDoughnutChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: data,
-    options: options
-});
 
 var options = { responsive: true };
 
 var ctx_donut = $("#donutChart").get(0).getContext("2d");
 
-$.get("/giv_history_donut.json", function (data) {
+$.get("/giv_donut.json", function (data) {
     var myDonutChart = new Chart(ctx_donut, {
                                             type: 'doughnut',
                                             data: data,

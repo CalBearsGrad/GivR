@@ -4,7 +4,7 @@ from jinja2 import StrictUndefined
 from datetime import datetime
 
 from flask import (Flask, render_template, redirect, request, flash,
-                   session)
+                   session, jsonify)
 from model import connect_to_db, db, Givr, Alt_choice, Giv, Recipient,Recipient_org, Restaurant, Item
 from flask_debugtoolbar import DebugToolbarExtension
 import requests
@@ -49,38 +49,20 @@ def correct_tax_deductible_givs():
     """Will find tax deductible givs and will
     change the value for "tax_exempt" to True"""
 
+    email = session["email"]
+
     user = Givr.query.filter_by(email=email).first()
 
     givs = Giv.query.filter_by(givr_id=user.givr_id).all()
-
+    print "We are here!"
     if givs:
         for giv in givs:
             if giv.recipient_id == 1 or giv.recipient_id == 2:
                 giv.tax_exempt = True
                 print giv
 
-        db.session.add(givs)
+            db.session.add(giv)
         db.session.commit()
-
-
-def find_tax_deductible_givs(user):
-    """Will find the total number of tax deductible givs,
-      will return the total amount,
-      and will find the average amount spent on Givs"""
-    user = Givr.query.filter_by(email=email).first()
-
-    givs = Giv.query.filter_by(givr_id=user.givr_id).all()
-
-    all_giv_count = 0
-    tax_exempt_givs = 0
-
-    for giv in givs:
-        all_giv_count += 1
-        if giv.tax_exempt:
-            tax_exempt_givs += 1
-
-    return all_giv_count, tax_exempt_givs
-
 
 
     # total_tax_deductible_givs_for_givr = givs.query.filter_by(givs.tax_exempt=True).count()
@@ -89,33 +71,8 @@ def find_tax_deductible_givs(user):
 
     # average_of_tax_deductible_givs_for_givr = sum_tax_deductible_givs_for_givr / total_tax_deductible_givs_for_givr
 
-    return total_tax_deductible_givs_for_givr, sum_tax_deductible_givs_for_givr, average_of_tax_deductible_givs_for_givr
+    # return total_tax_deductible_givs_for_givr, sum_tax_deductible_givs_for_givr, average_of_tax_deductible_givs_for_givr
 
-
-def show_giv_history_over_time():
-    """Will find tax deductible givs and will
-    change the value for "tax_exempt" to True"""
-    correct_tax_deductible_givs()
-
-    all_giv_count, tax_exempt_givs = find_tax_deductible_givs()
-    user = Givr.query.filter_by(email=email).first()
-
-    givs = Giv.query.filter_by(givr_id=user.givr_id).all()
-
-    return render_template("giv_history.html", all_giv_count=all_giv_count, tax_exempt_givs=tax_exempt_givs)
-
-
-@app.route('/giv_history')
-def giv_history():
-    """ Renders the user;s giv history"""
-
-    email = session["email"]
-
-    user = Givr.query.filter_by(email=email).first()
-
-    find_tax_deductible_givs()
-
-    return render_template("giv_history.html")
 
 @app.route('/preferences-basic-info', methods=["POST", "GET"])
 def preferences_basic_info():
@@ -509,12 +466,17 @@ def make_recipient():
     """Instantiating a new Recipient """
     print "Getting ready to instantiate a new recipient"
 
-    recipient_id = user.givr_id
 
     address = actual_destination.rstrip()
 
     address, city, N = row.split(",")
     state, zipcode = N.split(" ")
+
+    response = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address=address,+city+state,+zipcode')
+
+    resp_json_payload = response.json()
+
+    print(resp_json_payload['results'][0]['geometry']['location'])
 
 
     recipient = Recipient(recipient_id=recipient_id,
@@ -525,15 +487,6 @@ def make_recipient():
                           latitude=latitude,
                           longitude=longitude,
                           recipient_type=recipient_type)
-
-    recipient = Recipient(recipient_id=recipient_id,
-                                  address=address,
-                                  city=city,
-                                  state=state,
-                                  zipcode=zipcode,
-                                  latitude=latitude,
-                                  longitude=longitude,
-                                  recipient_type=recipient_type)
 
 
     # Flash success message or redirct user
@@ -581,7 +534,7 @@ def rapid_giv():
         ################################# Create postmates request
         #Delivery Quotes
         payload = {"dropoff_address": full_address,
-                    "pickup_address": closest_restaurant.address}
+                   "pickup_address": closest_restaurant.address}
 
         print "payload: ", payload
 
@@ -663,21 +616,153 @@ def rapid_giv():
 
         flash("You have successfully created a delivery.")
 
+        """Instantiating a new Recipient """
+        print "Getting ready to instantiate a new recipient"
 
+        recipient = Recipient.query.order_by('-recipient_id').first()
+
+
+        print "in recipient for loop"
+        address = actual_destination
+        print "assigned address to actual_destination"
+        address, city, state_zip = address.split(",")
+        print "successfully split address, city, state_zip"
+        print "This is state_zip", state_zip
+
+        state = state_zip[:-6]
+        zipcode = state_zip[-5:]
+
+        print "separated state and zip"
+
+        response = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address=address,+city+state,+zipcode')
+
+        resp_json_payload = response.json()
+
+        print(resp_json_payload['results'][0]['geometry']['location'])
+
+        google_location_dictionary = (resp_json_payload['results'][0]['geometry']['location'])
+
+        latitude = google_location_dictionary["lat"]
+        print "I am latitude", latitude
+
+        longitude = google_location_dictionary["lng"]
+        print "I am longitude", longitude
+
+        if tax_exempt == True:
+            recipient_type = "organization"
+        else:
+            recipient_type = "individual"
+
+        print "This is recipient_type", recipient_type
+
+        recipient_id = recipient.recipient_id + 1
+
+        recipient = Recipient(recipient_id=recipient_id,
+                              address=address,
+                              city=city,
+                              state=state,
+                              zipcode=zipcode,
+                              latitude=latitude,
+                              longitude=longitude,
+                              recipient_type=recipient_type)
+
+        print "This is address, city, state, zipcode", address, city, state, zipcode
+
+
+        # Flash success message or redirct user
+        db.session.add(recipient)
+        db.session.commit()
 
         return render_template("track_order.html", manifest_reference=manifest_reference,
-                                        fname=fname,
-                                        tracking_url=tracking_url)
+                               fname=fname, tracking_url=tracking_url)
 
+    return render_template("rapid_small_giv.html")
+
+############################################################ NEED TO MAKE THIS A ROUTE ###########################################################
+
+
+def bar_chart():
+    """Will display the user's giv history over time"""
+    correct_tax_deductible_givs()
+    email = session["email"]
+    all_giv_count, tax_exempt_givs = find_tax_deductible_givs()
+    user = Givr.query.filter_by(email=email).first()
+
+    givs = Giv.query.filter_by(givr_id=user.givr_id).all()
+
+    return render_template("giv_history.html", all_giv_count=all_giv_count, tax_exempt_givs=tax_exempt_givs)
+
+
+def find_tax_deductible_givs(user):
+    """Will find the total number of tax deductible givs,
+      will return the total amount,
+      and will find the average amount spent on Givs"""
+    correct_tax_deductible_givs()
+
+    email = session["email"]
+    user = Givr.query.filter_by(email=email).first()
+
+    givs = Giv.query.filter_by(givr_id=user.givr_id).all()
+
+    all_giv_count = 0
+    tax_exempt_givs = 0
+
+    for giv in givs:
+        all_giv_count += 1
+        if giv.tax_exempt:
+            tax_exempt_givs += 1
+
+    return all_giv_count, tax_exempt_givs
+
+
+@app.route('/giv_donut.json')
+def giv_donut():
+    """Return data about Melon Sales."""
+    correct_tax_deductible_givs()
+    email = session["email"]
+    user = Givr.query.filter_by(email=email).first()
+    all_giv_count, tax_exempt_givs = find_tax_deductible_givs(user)
+    print all_giv_count, tax_exempt_givs
+    data_dict = {
+                "labels": [
+                    "Non Tax Exempt",
+                    "Tax Exempt",
+                ],
+                "datasets": [
+                    {
+                        "data": [all_giv_count-tax_exempt_givs, tax_exempt_givs],
+                        "backgroundColor": [
+                            "#FF6384",
+                            "#36A2EB",
+                        ],
+                        "hoverBackgroundColor": [
+                            "#FF6384",
+                            "#36A2EB",
+                        ]
+                    }]
+                }
+
+    return jsonify(data_dict)
+
+
+@app.route('/giv_history')
+def giv_history():
+    """ Renders the user;s giv history"""
+    correct_tax_deductible_givs()
+    email = session["email"]
+
+    user = Givr.query.filter_by(email=email).first()
+
+    find_tax_deductible_givs(user)
+
+    return render_template("giv_history.html")
 
 
 @app.route("/track_order")
 def track_order():
     """allow user to track delivery."""
 
-
     return render_template("track_order.html")
-
 
 
 if __name__ == "__main__":
