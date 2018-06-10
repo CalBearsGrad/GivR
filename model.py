@@ -170,8 +170,8 @@ class Recipient(db.Model):
     city = db.Column(db.String(30), nullable=False)
     state = db.Column(db.String(100), nullable=False)
     zipcode = db.Column(db.String(9), nullable=False)
-    latitude = db.Column(db.String, nullable=False)
-    longitude = db.Column(db.String, nullable=False)
+    latitude = db.Column(db.String, nullable=True)
+    longitude = db.Column(db.String, nullable=True)
     recipient_type = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):

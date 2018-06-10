@@ -1,8 +1,10 @@
 """Utility file to seed Givr database from seed_recipients and seed_recipient_orgs data in seed_data/"""
 
 from sqlalchemy import func
-from model import Givr, Recipient, Recipient_org, Alt_choice, Restaurant, Item
-from datetime import datetime
+from model import Givr, Giv, Recipient, Recipient_org, Alt_choice, Restaurant, Item
+from datetime import datetime, timedelta
+import random
+import time
 
 from model import connect_to_db, db
 from server import app
@@ -33,7 +35,7 @@ def load_givs():
 
     print "Givs"
 
-    Givs.query.delete()
+    Giv.query.delete()
 
     for row in open("seed/seed_givs.txt"):
 
@@ -48,6 +50,77 @@ def load_givs():
         db.session.add(recipient_org)
 
     db.session.commit()
+
+def get_random_date(start_date, end_date):
+    """ This will pick a random date for each instantiated giv
+    """
+
+    start_date_secs = time.mktime(time.strptime(start_date, '%m-%d-%Y %H:%M:%S'))
+    end_date_secs = time.mktime(time.strptime(end_date, '%m-%d-%Y %H:%M:%S'))
+
+    random_date_secs = start_date_secs + random.random() * (end_date_secs - start_date_secs)
+
+    #return time.strftime('%m-%d-%Y %H:%M:%S', time.localtime(random_date_secs))
+    return datetime.fromtimestamp(random_date_secs)
+
+
+def create_givs(addresses, givr_id, num_givs_per_address, start_date, end_date):
+    """ 3 Addresses, Time of day/date,
+
+
+    created, delivered, delivery address,
+
+    """
+
+    givr = Givr.query.filter_by(givr_id=givr_id).first()
+
+    for address in addresses:
+        num_extra_givs = random.randint(1, 10)
+        to_add = random.choice([True, False])
+
+        if to_add == True:
+            num_givs_per_address += num_extra_givs
+        else:
+            num_givs_per_address -= num_extra_givs
+
+        for i in range(num_givs_per_address):
+            date_of_order = get_random_date(start_date, end_date)
+            date_of_delivery = date_of_order
+            date_of_delivery = date_of_delivery + timedelta(hours=1)
+
+            total_amount = random.randint(5, givr.smallgiv)
+
+            successful_delivery = True
+
+            size = "smallgiv"
+
+            tax_exempt = False
+
+
+            giv = Giv(givr_id=givr_id,
+                  restaurant_id=1,
+                  date_of_order=date_of_order,
+                  date_of_delivery=date_of_delivery,
+                  requested_destination=address,
+                  actual_destination=address,
+                  total_amount=total_amount,
+                  successful_delivery=successful_delivery,
+                  size=size,
+                  tax_exempt=tax_exempt)
+
+            # add num days to start date
+
+#source https://stackoverflow.com/questions/553303/generate-a-random-date-between-two-other-dates
+
+
+            print "We created a new Giv!"
+
+            db.session.add(giv)
+        db.session.commit()
+
+
+
+
 
 
 def load_givrs():
@@ -187,9 +260,11 @@ if __name__ == "__main__":
     db.create_all()
 
     # Import different types of data
-    load_alt_choice()
-    load_givrs()
-    load_restaurants()
-    load_items()
-    load_recipients()
-    load_recipient_orgs()
+    # load_alt_choice()
+    # load_givrs()
+    # load_restaurants()
+    # load_items()
+    # load_recipients()
+    # load_recipient_orgs()
+    create_givs(("609 Market St, San Francisco, CA 94105", "301 Post St, San Francisco, CA 94108"),
+        000000003, 80, "01-01-2018 01:01:01", "06-09-2018 01:01:01")

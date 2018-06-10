@@ -76,7 +76,7 @@ def find_tax_deductible_givs(user):
 
     for giv in givs:
         all_giv_count += 1
-         if giv.tax_exempt == True
+        if giv.tax_exempt:
             tax_exempt_givs += 1
 
     return all_giv_count, tax_exempt_givs
@@ -505,6 +505,41 @@ def find_match_name(closest_restaurant, giv_amount):
 
             return best_match_name, best_price_match
 
+def make_recipient():
+    """Instantiating a new Recipient """
+    print "Getting ready to instantiate a new recipient"
+
+    recipient_id = user.givr_id
+
+    address = actual_destination.rstrip()
+
+    address, city, N = row.split(",")
+    state, zipcode = N.split(" ")
+
+
+    recipient = Recipient(recipient_id=recipient_id,
+                          address=address,
+                          city=city,
+                          state=state,
+                          zipcode=zipcode,
+                          latitude=latitude,
+                          longitude=longitude,
+                          recipient_type=recipient_type)
+
+    recipient = Recipient(recipient_id=recipient_id,
+                                  address=address,
+                                  city=city,
+                                  state=state,
+                                  zipcode=zipcode,
+                                  latitude=latitude,
+                                  longitude=longitude,
+                                  recipient_type=recipient_type)
+
+
+    # Flash success message or redirct user
+    db.session.add(giv)
+    db.session.commit()
+
 
 @app.route("/rapid_small_giv", methods=['POST', 'GET'])
 def rapid_giv():
@@ -628,14 +663,13 @@ def rapid_giv():
 
         flash("You have successfully created a delivery.")
 
+
+
         return render_template("track_order.html", manifest_reference=manifest_reference,
                                         fname=fname,
                                         tracking_url=tracking_url)
 
 
-
-        # Flash success message or redirct user
-    return render_template("/rapid_small_giv.html")
 
 @app.route("/track_order")
 def track_order():
