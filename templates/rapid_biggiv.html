@@ -3,14 +3,14 @@
 {% block content %}
 <h1 right:"30px" >Rapid Big Giv!</h1>
 <small>Wanted to do a small giv? Click the button to be redirected</small>
-<button type="button" value="Big Giv" onclick="window.location.href='/rapid_small_giv'" class="btn btn-success btn-sm">Small Giv</button>
+<button type="button" value="Small Giv" onclick="window.location.href='/rapid_small_giv'" class="btn btn-success btn-sm">Small Giv</button>
 <br>
 <br>
-<form class="form-group" action="/rapid_small_giv" method="POST">
+<form class="form-group" action="/rapid_big_giv" method="POST">
     <br>
     <h3>Where do you want your Giv to be delivered?</h3>
     <br>
-    <button type="button" value="current_location" onclick="window.location.href='/rapid_small_giv'" class="btn btn-success">To my Current Location</button>
+    <button type="button" value="current_location" onclick="window.location.href='/rapid_big_giv'" class="btn btn-success">To my Current Location</button>
     <br>
     <br>
     <br>
