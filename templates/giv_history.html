@@ -9,7 +9,11 @@
 <br>
 <h2>How many Givs over time</h2>
 <br>
-
+    <span class="badge badge-pill badge-success"></span>
+    <div class="bar-chart">
+        <canvas id="barChart"></canvas>
+        <div id="barLegend" class="chart-legend"></div>
+    </div>
 <div>
 <br>
 <br>
@@ -37,7 +41,7 @@
 
 
 
-var options = { responsive: true };
+var donut_options = { responsive: true };
 
 var ctx_donut = $("#donutChart").get(0).getContext("2d");
 
@@ -45,10 +49,35 @@ $.get("/giv_donut.json", function (data) {
     var myDonutChart = new Chart(ctx_donut, {
                                             type: 'doughnut',
                                             data: data,
-                                            options: options
+                                            options: donut_options
                                           });
+
     $('#donutLegend').html(myDonutChart.generateLegend());
 });
+
+var ctx_bar = $("#barChart").get(0).getContext("2d");
+
+var bar_options = {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Your Givs for 2018'
+      },
+      tooltip: {enabled: true}
+    };
+
+$.get("bar_chart.json", function (data) {
+    console.log(data)
+    var myBarChart = new Chart(ctx_bar, {
+                                type: 'bar',
+                                data: data,
+                                options: bar_options
+                                });
+
+    $('#barLegend').html(myBarChart.generateLegend());
+});
+
+
 </script>
 
 
