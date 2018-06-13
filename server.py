@@ -11,6 +11,7 @@ import requests
 import random
 from requests.auth import HTTPBasicAuth
 from pprint import pprint
+from sqlalchemy import extract
 
 
 
@@ -864,16 +865,35 @@ def rapid_biggiv():
     return render_template("rapid_biggiv.html")
 
 
+@app.route('/bar_chart.json')
 def bar_chart():
     """Will display the user's giv history over time"""
-    correct_tax_deductible_givs()
+
     email = session["email"]
-    all_giv_count, tax_exempt_givs = find_tax_deductible_givs()
+
     user = Givr.query.filter_by(email=email).first()
 
-    givs = Giv.query.filter_by(givr_id=user.givr_id).all()
+    # givs = Giv.query.filter_by(givr_id=user.givr_id).all()
 
-    return render_template("giv_history.html", all_giv_count=all_giv_count, tax_exempt_givs=tax_exempt_givs)
+    # givs.query.filter(extract('month', ))
+    data = []
+    months = [1,2,3,4,5,6]
+    for month in months:
+        givs_amount = Giv.query.filter_by(givr_id=user.givr_id).filter(extract('month', Giv.date_of_delivery)==month).count()
+        data.append(int(givs_amount))
+
+    print data
+
+    data_dict = { "labels": ["January", "February", "March", "April", "May"],
+                                  "datasets": [
+                                    {
+                                      "label": "Your Givs for 2018",
+                                      "backgroundColor": ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                                      "data": data
+                                    }
+                                  ]
+                                }
+    return jsonify(data_dict)
 
 
 def find_tax_deductible_givs(user):
@@ -915,12 +935,12 @@ def giv_donut():
                     {
                         "data": [all_giv_count-tax_exempt_givs, tax_exempt_givs],
                         "backgroundColor": [
-                            "#FF6384",
-                            "#36A2EB",
+                            "#20993A",
+                            "#D2D4D3",
                         ],
                         "hoverBackgroundColor": [
-                            "#FF6384",
-                            "#36A2EB",
+                            "#1B7F31",
+                            "#787A79",
                         ]
                     }]
                 }
