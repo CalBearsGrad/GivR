@@ -947,6 +947,38 @@ def giv_donut():
 
     return jsonify(data_dict)
 
+@app.route('/giv_map.json')
+def giv_map():
+    """ Display a map of districts where the givr has made a giv
+    """
+    email = session["email"]
+
+    givr = Givr.query.filter_by(email=email).first()
+
+    givs = Giv.query.filter_by(givr_id=givr.givr_id).all()
+
+    giv_count = Giv.query.filter_by(givr_id=givr.givr_id).count()
+
+    # create a dictionary of givs. The key will be the address, and the values will be:
+    # number of total times GivR has given at that address, the total amount given at that address, and the average amount of Giv
+
+    district_dictionary = { "District 6": [["94103","94109"], "South of Market/SOMA, Tenderloin, Treasure Island"],
+                            "District 5": [["94117"], "Haight Ashbury, Panhandle, Western Addition"],
+                            "District 3": [["94102", "94108"], "Russian Hill, Nob Hill, Telegraph Hill, North Beach"]
+                        }
+
+    dictionary_of_givs = {
+                            }
+    for giv in givs:
+        for key in district_dictionary:
+            if giv.actual_destination[-6:] in district_dictionary[key][0]:
+                if key in dictionary_of_givs:
+                    dictionary_of_givs[key] +=1
+                else:
+                    dictionary_of_givs[key] = 1
+    return jsonify(dictionary_of_givs)
+
+
 
 @app.route('/giv_history')
 def giv_history():
