@@ -1,7 +1,7 @@
 {% extends 'base_login.html' %}
 
  {% block content %}
- \
+
 
 <style type="text/css">
 #map {
@@ -36,9 +36,7 @@
 <br>
 <br>
 <h2>You are a GivR in these neighborhoods</h2>
-<svg>
 
-</svg>
 <br>
 <div id="map" style="height:800px"></div>
 <br>
@@ -123,12 +121,7 @@ $.get("bar_chart.json", function (data) {
 
 // });
 
-let sf = {lat: 37.751645, lng: -122.45546}
 
-let map = new google.maps.Map(document.querySelector('#map'), {
-        center: sf,
-        zoom: 12,
-});
 
 
 

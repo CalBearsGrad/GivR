@@ -1,13 +1,33 @@
 {% extends 'base.html' %}
 
  {% block content %}
-<h1>About Givr</h1>
- <img src="/static/look-away-f-homeless.jpg" alt="logo_transparent" style="width:600px;height:400px;">
+
+ <style>
+.parallax {
+    /* The image used */
+
+    background-image: url("/static/city-lights-one.jpg");
+    background-image: url("/static/city-lights-two.jpg");
+
+    /* Set a specific height */
+    height: 500px;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+</style>
+
+<!-- Container element -->
+<div class="parallax"></div>
+<h1 style="green">About Givr</h1>
 <br>
 <br>
 <h3>The Problem</h3>
 <br>
-<p>The booming tech economy affects millions of people daily. In San Francisco nearly all clothing stores, restaurants, grocery markets and even parking meters accept electronic payments and fewer and fewer people carry cash. Unfortunately, the visibly homeless cannot tap into this electronic payment system when asking for donations. </p>
+<p>The booming tech economy affects millions of people daily. In San Francisco, nearly all clothing stores, restaurants, grocery markets and even parking meters accept electronic payments and fewer and fewer people carry cash. Unfortunately, the visibly homeless cannot tap into this electronic payment system when asking for donations. </p>
 <br>
 <h3>Vision</h3>
 <br>
