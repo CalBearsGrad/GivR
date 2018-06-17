@@ -73,6 +73,7 @@ def create_givs(addresses, givr_id, num_givs_per_address, start_date, end_date):
     """
 
     givr = Givr.query.filter_by(givr_id=givr_id).first()
+    giv = Giv.query.filter_by(givr_id=givr_id).first()
 
     for address in addresses:
         num_extra_givs = random.randint(1, 10)
@@ -94,7 +95,7 @@ def create_givs(addresses, givr_id, num_givs_per_address, start_date, end_date):
 
             size = "smallgiv"
 
-            if requested_destination == "1001 Polk Street, San Francisco, California 94109" or requested_destination == "536 Central Avenue, San Francisco, California 94117":
+            if address == "1001 Polk Street, San Francisco, California 94109" or address == "536 Central Avenue, San Francisco, California 94117":
                 tax_exempt = True
             else:
                 tax_exempt = False
@@ -268,5 +269,5 @@ if __name__ == "__main__":
     # load_items()
     # load_recipients()
     # load_recipient_orgs()
-    create_givs(("536 Central Avenue, San Francisco, California 94117", "1001 Polk Street, San Francisco, California 94109"),
-        000000002, 60, "01-01-2018 01:01:01", "06-09-2018 01:01:01")
+    create_givs(("600 Harrison Street, San Francisco, California 94107"),
+        000000002, 60, "01-01-2018 01:01:01", "06-12-2018 01:01:01")

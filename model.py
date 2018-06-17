@@ -76,7 +76,7 @@ class Giv(db.Model):
         """Provide helpful representation when printed
         """
 
-        return "<Giv giv_id={} givr_id={} restaurant_id={} date_of_order={}\
+        return "<Giv giv_id={} givr_id={} restaurant_id={}\
         date_of_order={} date_of_delivery={} requested_destination={}\
         actual_destination={} total_amount={} restaurant={}\
         successful_delivery={} recipient_id={} size={} tax_exempt={}>".format(self.giv_id,
