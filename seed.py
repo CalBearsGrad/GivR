@@ -269,5 +269,5 @@ if __name__ == "__main__":
     # load_items()
     # load_recipients()
     # load_recipient_orgs()
-    create_givs(("1001 Polk Street|San Francisco|California|94109"),
-        000000002, 100, "01-01-2018 01:01:01", "06-17-2018 01:01:01")
+    create_givs(("600 Townsend St #200, San Francisco, CA 94103", "598 Market St, San Francisco, CA 94104"),
+        000000001, 100, "01-01-2018 01:01:01", "06-1-2018 01:01:01")

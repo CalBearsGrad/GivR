@@ -74,7 +74,6 @@ var bar_options = {
     };
 
 $.get("bar_chart.json", function (data) {
-    console.log(data);
     var myBarChart = new Chart(ctx_bar, {
                                 type: 'bar',
                                 data: data,
@@ -83,46 +82,6 @@ $.get("bar_chart.json", function (data) {
 
     $('#barLegend').html(myBarChart.generateLegend());
 });
-
-// $.get('/giv_map.json', function(data_dict) {
-//     let number_of_distinct_giv_addresses, district_dictionary, dictionary_of_givs, giv_addresses, giv_lat_longs;
-//     let marker, html;
-
-//     for (let key in data_dict) {
-//         number_of_distinct_giv_addresses = data_dict["number_of_distinct_giv_addresses"];
-//         district_dictionary = data_dict["district_dictionary"];
-//         dictionary_of_givs = data_dict["dictionary_of_givs"];
-//         giv_addresses = data_dict["giv_addresses"];
-//         giv_lat_longs = data_dict["giv_lat_longs"];
-//         console.log(giv_lat_longs);
-
-//         lat_long = giv_lat_longs[0];
-//         // Define the marker
-
-//         marker = new google.maps.Marker({
-//             position: new google.maps.LatLng(lat_long),
-//             map: map,
-//             title: 'neighborhood: ' + district_dictionary["District 6"][1]
-//             });
-
-//          // Define the content of the infoWindow
-//         // html = (
-//         //   '<div class="window-content">' +
-//         //         '<img src="/static/Logo_Transparent.png" alt="giv" style="width:150px;" class="thumbnail">' +
-//         //         '<p><b>Total # of times you have Given: </b>' + dictionary_of_givs[key][0] + '</p>' +
-//         //         '<p><b>Total $ Given: </b>' + dictionary_of_givs[key][1] + '</p>' +
-//         //         '<p><b>Average Amount Given: </b>' + dictionary_of_givs[key][2] + '</p>' +
-//         //   '</div>');
-
-//         // Inside the loop we call bindInfoWindow passing it the marker,
-//         // map, infoWindow and contentString
-//         // bindInfoWindow(marker, map, infoWindow, html);
-//     }
-
-// });
-
-
-
 
 
 

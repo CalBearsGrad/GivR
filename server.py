@@ -974,45 +974,6 @@ def giv_map():
     # print "This is giv_addresses", giv_addresses, number_of_distinct_giv_addresses
 
 
-    """This retrieves the lat longs for the giv_addresses so I can turn them into markers """
-    giv_lat_longs = []
-
-    for giv_address in giv_addresses:
-        """Finding lat longs for giv """
-
-        # print "assigned address to actual_destination"
-        address, city, state_zip = giv_address.split(",")
-        # print "successfully split address, city, state_zip"
-        # print "This is state_zip", state_zip
-
-        state = state_zip[:-6]
-        zipcode = state_zip[-5:]
-
-        # print "separated state and zip"
-
-        response = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address=address,+city+state,+zipcode')
-        # print "******************RESPONSE RESULTS**************"
-        # print response.json
-        resp_json_payload = response.json()
-        # print resp_json_payload['results']
-        if resp_json_payload['results']:
-            # print(resp_json_payload['results'][0]['geometry']['location'])
-
-            google_location_dictionary = (resp_json_payload['results'][0]['geometry']['location'])
-
-            latitude = google_location_dictionary["lat"]
-            # print "I am latitude", latitude
-
-            longitude = google_location_dictionary["lng"]
-            # print "I am longitude", longitude
-
-            marker = []
-
-            marker.append(latitude)
-            marker.append(longitude)
-            giv_lat_longs.append(marker)
-
-
     """ Create a dictionary of givs. The key will be the address, and the values will be:
      1) The number of total times GivR has given at that address,
      2) the total amount given at that address
@@ -1059,7 +1020,8 @@ def giv_history():
     """ Renders the user;s giv history"""
     correct_tax_deductible_givs()
 
-    giv_map()
+    # number_of_distinct_giv_addresses, district_dictionary, dictionary_of_givs, giv_addresses, giv_lat_longs = giv_map()
+
 
     email = session["email"]
 
@@ -1067,11 +1029,13 @@ def giv_history():
 
     find_tax_deductible_givs(user)
 
-    return render_template("giv_history.html", number_of_distinct_giv_addresses=number_of_distinct_giv_addresses,
-                                               district_dictionary=district_dictionary,
-                                               dictionary_of_givs=dictionary_of_givs,
-                                               giv_addresses=giv_addresses,
-                                               giv_lat_longs=giv_lat_longs)
+    return render_template("giv_history.html")
+
+    # return render_template("giv_history.html", number_of_distinct_giv_addresses=number_of_distinct_giv_addresses,
+    #                                            district_dictionary=district_dictionary,
+    #                                            dictionary_of_givs=dictionary_of_givs,
+    #                                            giv_addresses=giv_addresses,
+    #                                            giv_lat_longs=giv_lat_longs)
 
 
 @app.route("/track_order")
