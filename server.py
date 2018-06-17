@@ -882,7 +882,7 @@ def bar_chart():
         givs_amount = Giv.query.filter_by(givr_id=user.givr_id).filter(extract('month', Giv.date_of_delivery)==month).count()
         data.append(int(givs_amount))
 
-    print data
+    #print data
 
     data_dict = { "labels": ["January", "February", "March", "April", "May"],
                                   "datasets": [
@@ -925,7 +925,7 @@ def giv_donut():
     email = session["email"]
     user = Givr.query.filter_by(email=email).first()
     all_giv_count, tax_exempt_givs = find_tax_deductible_givs(user)
-    print all_giv_count, tax_exempt_givs
+    # print all_giv_count, tax_exempt_givs
     data_dict = {
                 "labels": [
                     "Non Tax Exempt",
@@ -947,9 +947,9 @@ def giv_donut():
 
     return jsonify(data_dict)
 
-@app.route('/giv_map.json')
+
 def giv_map():
-    """ Display a map of districts where the givr has made a giv
+    """ Creates data for a map of SF where the givr has made a giv
     """
     email = session["email"]
 
@@ -957,26 +957,100 @@ def giv_map():
 
     givs = Giv.query.filter_by(givr_id=givr.givr_id).all()
 
+    givs_distinct = Giv.query.filter_by(givr_id=givr.givr_id).distinct(Giv.actual_destination)
+
     giv_count = Giv.query.filter_by(givr_id=givr.givr_id).count()
 
-    # create a dictionary of givs. The key will be the address, and the values will be:
-    # number of total times GivR has given at that address, the total amount given at that address, and the average amount of Giv
+    """ Get the distinct addresses where the GivR has Given"""
+
+    giv_addresses = []
+
+    for giv in givs_distinct:
+
+        giv_addresses.append(giv.actual_destination)
+
+    number_of_distinct_giv_addresses = len(giv_addresses)
+
+    # print "This is giv_addresses", giv_addresses, number_of_distinct_giv_addresses
+
+
+    """This retrieves the lat longs for the giv_addresses so I can turn them into markers """
+    giv_lat_longs = []
+
+    for giv_address in giv_addresses:
+        """Finding lat longs for giv """
+
+        # print "assigned address to actual_destination"
+        address, city, state_zip = giv_address.split(",")
+        # print "successfully split address, city, state_zip"
+        # print "This is state_zip", state_zip
+
+        state = state_zip[:-6]
+        zipcode = state_zip[-5:]
+
+        # print "separated state and zip"
+
+        response = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address=address,+city+state,+zipcode')
+        # print "******************RESPONSE RESULTS**************"
+        # print response.json
+        resp_json_payload = response.json()
+        # print resp_json_payload['results']
+        if resp_json_payload['results']:
+            # print(resp_json_payload['results'][0]['geometry']['location'])
+
+            google_location_dictionary = (resp_json_payload['results'][0]['geometry']['location'])
+
+            latitude = google_location_dictionary["lat"]
+            # print "I am latitude", latitude
+
+            longitude = google_location_dictionary["lng"]
+            # print "I am longitude", longitude
+
+            marker = []
+
+            marker.append(latitude)
+            marker.append(longitude)
+            giv_lat_longs.append(marker)
+
+
+    """ Create a dictionary of givs. The key will be the address, and the values will be:
+     1) The number of total times GivR has given at that address,
+     2) the total amount given at that address
+     3) the average amount of Giv for that neighborhood"""
 
     district_dictionary = { "District 6": [["94103","94109"], "South of Market/SOMA, Tenderloin, Treasure Island"],
                             "District 5": [["94117"], "Haight Ashbury, Panhandle, Western Addition"],
                             "District 3": [["94102", "94108"], "Russian Hill, Nob Hill, Telegraph Hill, North Beach"]
                         }
 
-    dictionary_of_givs = {
-                            }
+    dictionary_of_givs = {}
+
     for giv in givs:
         for key in district_dictionary:
             if giv.actual_destination[-6:] in district_dictionary[key][0]:
                 if key in dictionary_of_givs:
-                    dictionary_of_givs[key] +=1
+                    dictionary_of_givs[key][0] += 1
+                    dictionary_of_givs[key][1] += giv.total_amount
+
                 else:
-                    dictionary_of_givs[key] = 1
-    return jsonify(dictionary_of_givs)
+                    dictionary_of_givs[key] = []
+                    dictionary_of_givs[key][0] = 1
+                    dictionary_of_givs[key][1] = 0
+                    dictionary_of_givs[key][2] = 0
+
+                dictionary_of_givs[key][2] = (dictionary_of_givs[key][1] / dictionary_of_givs[key][0])
+
+    print
+    print "This is dictionary of givs", jsonify(dictionary_of_givs)
+    print
+    data_dict = {"number_of_distinct_giv_addresses": number_of_distinct_giv_addresses,
+                 "district_dictionary": district_dictionary,
+                 "dictionary_of_givs": dictionary_of_givs,
+                 "giv_addresses": giv_addresses,
+                 "giv_lat_longs": giv_lat_longs}
+
+    return number_of_distinct_giv_addresses, district_dictionary, dictionary_of_givs, giv_addresses, giv_lat_longs
+
 
 
 
@@ -984,13 +1058,20 @@ def giv_map():
 def giv_history():
     """ Renders the user;s giv history"""
     correct_tax_deductible_givs()
+
+    giv_map()
+
     email = session["email"]
 
     user = Givr.query.filter_by(email=email).first()
 
     find_tax_deductible_givs(user)
 
-    return render_template("giv_history.html")
+    return render_template("giv_history.html", number_of_distinct_giv_addresses=number_of_distinct_giv_addresses,
+                                               district_dictionary=district_dictionary,
+                                               dictionary_of_givs=dictionary_of_givs,
+                                               giv_addresses=giv_addresses,
+                                               giv_lat_longs=giv_lat_longs)
 
 
 @app.route("/track_order")

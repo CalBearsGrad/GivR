@@ -1,7 +1,13 @@
 {% extends 'base_login.html' %}
 
  {% block content %}
+ \
 
+<style type="text/css">
+#map {
+    height:800px;
+}
+</style>
 <h1 right:"30px" >Here is your Giv History!</h1>
 <br>
 <br>
@@ -26,9 +32,7 @@
     </div>
 <br>
 <br>
-<h2>Average Amount spent on Givs</h2>
 <br>
-<span class="badge badge-pill badge-success"></span>
 <br>
 <br>
 <h2>You are a GivR in these neighborhoods</h2>
@@ -36,13 +40,15 @@
 
 </svg>
 <br>
+<div id="map" style="height:800px"></div>
 <br>
 <br>
 <br>
 <br>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
 <script type="text/javascript">
-
-
 
 var donut_options = { responsive: true };
 
@@ -70,7 +76,7 @@ var bar_options = {
     };
 
 $.get("bar_chart.json", function (data) {
-    console.log(data)
+    console.log(data);
     var myBarChart = new Chart(ctx_bar, {
                                 type: 'bar',
                                 data: data,
@@ -80,43 +86,166 @@ $.get("bar_chart.json", function (data) {
     $('#barLegend').html(myBarChart.generateLegend());
 });
 
-const svg = d3.select(DOM.svg(d.width, d.height))
-    .style("width", "100%")
-    .style("height", "auto");
-let selected = null;
+// $.get('/giv_map.json', function(data_dict) {
+//     let number_of_distinct_giv_addresses, district_dictionary, dictionary_of_givs, giv_addresses, giv_lat_longs;
+//     let marker, html;
 
-svg.append("g")
-    .selectAll("path")
-    .data(sf.features)
-    .enter()
-    .append("path")
-    // .attr("fill", d => color(1))
-    .style('fill', '#fff0') //?transparent
-    .attr("stroke", mapColor)
-    .attr("d", path)
-    .style('stroke-width', '1px')
-    .on("click", function(d) {
-        const selection = d3.select(this);
-        if (selected && selection.attr("class") === "selected") {
-            return false;
-            }
-        selection.style('stroke', 'grey')
-            .style('stroke-width', '2px')
-            .style('stroke-opacity', 1)
-            .style('fill', '#f0f') //?transparent
+//     for (let key in data_dict) {
+//         number_of_distinct_giv_addresses = data_dict["number_of_distinct_giv_addresses"];
+//         district_dictionary = data_dict["district_dictionary"];
+//         dictionary_of_givs = data_dict["dictionary_of_givs"];
+//         giv_addresses = data_dict["giv_addresses"];
+//         giv_lat_longs = data_dict["giv_lat_longs"];
+//         console.log(giv_lat_longs);
 
-    })
+//         lat_long = giv_lat_longs[0];
+//         // Define the marker
+
+//         marker = new google.maps.Marker({
+//             position: new google.maps.LatLng(lat_long),
+//             map: map,
+//             title: 'neighborhood: ' + district_dictionary["District 6"][1]
+//             });
+
+//          // Define the content of the infoWindow
+//         // html = (
+//         //   '<div class="window-content">' +
+//         //         '<img src="/static/Logo_Transparent.png" alt="giv" style="width:150px;" class="thumbnail">' +
+//         //         '<p><b>Total # of times you have Given: </b>' + dictionary_of_givs[key][0] + '</p>' +
+//         //         '<p><b>Total $ Given: </b>' + dictionary_of_givs[key][1] + '</p>' +
+//         //         '<p><b>Average Amount Given: </b>' + dictionary_of_givs[key][2] + '</p>' +
+//         //   '</div>');
+
+//         // Inside the loop we call bindInfoWindow passing it the marker,
+//         // map, infoWindow and contentString
+//         // bindInfoWindow(marker, map, infoWindow, html);
+//     }
+
+// });
+
+let sf = {lat: 37.751645, lng: -122.45546}
+
+let map = new google.maps.Map(document.querySelector('#map'), {
+        center: sf,
+        zoom: 12,
+});
 
 
-// return svg.node();
-let sf = null;
-(fetch("https://gist.githubusercontent.com/jermspeaks/4aa2e579a33aa92481980881dc2e9211/raw/84e48187d6331076288c24a610b5c8381eb1445d/sf.geojson"))
-    .then((response)=> response.json())
-    .then((responseJSON) => {
-        sf = responseJSON;
-    })
 
 
+
+
+// const svg = d3.select(DOM.svg(d.width, d.height))
+//     .style("width", "100%")
+//     .style("height", "auto");
+// let selected = null;
+// import "@jashkenas/inputs"
+
+// var makeMap = function() {
+
+//     path = {
+//         // Use Mercator projection
+//         var projection = d3.geo.mercator();
+//         // Powerfull stuff! I didnt know where exactly my dataset was located projection-wise,
+//         // but .fitExtent() allows you to fit your dataset within a specified canvas
+//         .fitExtent([[0, 0], [d.width, d.height]], sf)
+//         // .center([5.3,51.3])
+//         // .center([4.6075226,51.6460635])
+//         // .translate([width/2, height/2])
+//         // .scale(zoom)
+
+//         return d3.geoPath().projection(projection);
+//     }
+
+//     viewof mapColor = color({
+//         value: "#ff00cc",
+//         title: "Background Color",
+//         description: "This color picker starts out blue"
+//     })
+
+//     const svgContainer = d3.select('body')
+//                                .append('svg')
+//                                .style('height', "auto")
+//                                .style('width', "100%");
+//     let selected = null;
+//     let sf = "test";
+//     // debugger;
+//     fetch("https://gist.githubusercontent.com/jermspeaks/4aa2e579a33aa92481980881dc2e9211/raw/84e48187d6331076288c24a610b5c8381eb1445d/sf.geojson")
+//         .then((response)=> response.json())
+//         .then((responseJSON) => {
+//             sf = responseJSON;
+//             alert("I GOT IT!");
+//             console.log(sf);
+//         }).catch(function(err) {console.log('FETCH ERROR: ', err);});
+
+//     // sf = (await fetch("https://gist.githubusercontent.com/jermspeaks/4aa2e579a33aa92481980881dc2e9211/raw/84e48187d6331076288c24a610b5c8381eb1445d/sf.geojson")).json()
+
+
+//     // console.log("THIS IS SF");
+//     // console.log(sf);
+
+//     // creating the elements using .data().enter()
+//     svg.append("g")
+//         .selectAll("path")
+//         .data(sf.features)
+//         .enter()
+//         .append("path")
+//         // .attr("fill", d => color(1))
+//         .style('fill', '#fff0') //?transparent
+//         .attr("stroke", mapColor)
+//         .attr("d", path)
+//         .style('stroke-width', '1px')
+//         .on("mouseover", function(d) {
+//         const selection = d3.select(this);
+//         if (selected && selection.attr("class") === "selected") {
+//         return false;
+//     }
+
+//     selection.style('stroke', 'grey')
+//         .style('stroke-width', '2px')
+//         .style('stroke-opacity', 1)
+//         .style('fill', '#f0f') //?transparent
+
+//     })
+
+//     .on("mouseout", function(d) {
+//         const selection = d3.select(this);
+//         if (selected && selection.attr("class") === "selected") {
+//         return false;
+//     }
+
+//     selection.style('stroke', mapColor)
+//         .style('stroke-width', '1px')
+//         .style('stroke-opacity', 1)
+//         .style('fill', '#fff0') //?transparent
+//     })
+
+//     .on("click", function(d) {
+//     // Phase out previously selected
+//         if (selected) {
+//             selected.style('stroke', mapColor)
+//             .style('stroke-width', '1px')
+//             .style('stroke-opacity', 1)
+//             .style('fill', '#fff0')
+//             .classed("selected", false);
+//     }
+
+//     // Set newly selected
+//     selected = d3.select(this);
+//     selected.style('stroke', 'grey')
+//         .style('stroke-width', '2px')
+//         .style('stroke-opacity', 1)
+//         .style('fill', '#ccc')
+//         .classed("selected", true);
+
+//     })
+
+
+
+//     return svg.node();
+// }
+
+// makeMap();
 
 </script>
 

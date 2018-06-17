@@ -80,12 +80,30 @@ $.get("bar_chart.json", function (data) {
     $('#barLegend').html(myBarChart.generateLegend());
 });
 
-const svg = d3.select(DOM.svg(d.width, d.height))
-    .style("width", "100%")
-    .style("height", "auto");
-let selected = null;
+// const svg = d3.select(DOM.svg(d.width, d.height))
+//     .style("width", "100%")
+//     .style("height", "auto");
+// let selected = null;
 
-svg.append("g")
+const svgContainer = d3.select('body')
+                           .append('svg')
+                           .style('height', "auto")
+                           .style('width', "100%");
+let selected = null;
+let sf = "test";
+(fetch("https://gist.githubusercontent.com/jermspeaks/4aa2e579a33aa92481980881dc2e9211/raw/84e48187d6331076288c24a610b5c8381eb1445d/sf.geojson"))
+    .then((response)=> response.json())
+    .then((responseJSON) => {
+        sf = responseJSON;
+    })
+
+// sf = (await fetch("https://gist.githubusercontent.com/jermspeaks/4aa2e579a33aa92481980881dc2e9211/raw/84e48187d6331076288c24a610b5c8381eb1445d/sf.geojson")).json()
+
+
+console.log("THIS IS SF");
+console.log(sf);
+
+svgContainer.append("g")
     .selectAll("path")
     .data(sf.features)
     .enter()
@@ -108,7 +126,7 @@ svg.append("g")
     })
 
 
-return svg.node();
+// return svg.node();
 
 
 
