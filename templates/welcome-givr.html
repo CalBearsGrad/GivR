@@ -1,18 +1,22 @@
 {% extends 'base_login.html' %}
 
  {% block content %}
-<h1 right:"30px" >Welcome {{ fname }}!</h1>
-<br>
-<h2>Rapid Giv</h2>
-<br>
-<br>
-    <form>
-      <button type="button" value="smallgiv" onclick="window.location.href='/rapid_small_giv'" class="btn btn-success">Small Giv</button>
-      <br>
-      <br>
-      <button type="button" value="Big Giv" onclick="window.location.href='/rapid_big_giv'" class="btn btn-success">Big Giv</button>
-    </form>
+ <div class="container">
+    <h1>Welcome {{ fname }}!</h1>
+    <br>
+    <h2>What would you like to Giv today?</h2>
+    <br>
+    <br>
+        <form>
+            <div style="margin-left: 5px;"class="row">
+              <button type="button" value="smallgiv" style="width: 200px" onclick="window.location.href='/rapid_small_giv'" class="btn btn-success btn-lg">Small Giv</button>
 
+              <span style="margin: 30px;"><strong>     OR     </strong></span>
+
+              <button type="button" value="Big Giv" style="width: 200px" onclick="window.location.href='/rapid_big_giv'" class="btn btn-success btn-lg">Big Giv</button>
+            </div>
+        </form>
+    </div>
 </div>
 
     {% endblock %}

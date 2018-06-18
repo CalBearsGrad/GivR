@@ -1,95 +1,97 @@
 {% extends 'base_login.html' %}
 
 {% block content %}
-<h1 right:"30px" >Rapid Small Giv!</h1>
-<small>Wanted to do a big giv? Click the button to be redirected</small>
-<button type="button" value="Big Giv" onclick="window.location.href='/rapid_big_giv'" class="btn btn-success btn-sm">Big Giv</button>
-<br>
-<br>
-<form class="form-group" action="/rapid_small_giv" method="POST">
-    <br>
-    <h3>Where do you want your Giv to be delivered?</h3>
-    <br>
-    <button type="button" value="current_location" onclick="window.location.href='/rapid_small_giv'" class="btn btn-success">To my Current Location</button>
+<div class="container">
+    <h1 right:"30px" >Rapid Small Giv!</h1>
+    <small>Wanted to do a big giv? Click the button to be redirected</small>
+    <button type="button" value="Big Giv" onclick="window.location.href='/rapid_big_giv'" class="btn btn-success btn-sm">Big Giv</button>
     <br>
     <br>
-    <br>
-    <h3>OR enter an address below. </h3>
-    <br>
+    <form class="form-group" action="/rapid_small_giv" method="POST">
+        <br>
+        <h3>Where do you want your Giv to be delivered?</h3>
+        <br>
+        <button type="button" value="current_location" onclick="window.location.href='/rapid_small_giv'" class="btn btn-success">To my Current Location</button>
+        <br>
+        <br>
+        <br>
+        <h3>OR enter an address below. </h3>
+        <br>
 
-    <div class="form-group">
-        <label for="address">Address</label>
-        <input name="address" type="text" class="form-control" id="address" placeholder="1234 Main Street">
-    </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input name="address" type="text" class="form-control col-md-6" id="address" placeholder="1234 Main Street">
+        </div>
 
-    <div class="form-group">
-        <label for="city">City</label>
-        <input name="city" type="text" class="form-control" id="city">
-    </div>
+        <div class="form-group">
+            <label for="city">City</label>
+            <input name="city" type="text" class="form-control col-md-6" id="city">
+        </div>
 
-    <div class="form-group">
-        <label for="state">State</label>
-        <select name="state" class="form-control">
-            <option selected>Choose...</option>
-            <option value="California">Alabama</option>
-            <option value="California">Alaska</option>
-            <option value="California">Arizona</option>
-            <option value="California">Arkansas</option>
-            <option value="California" >California</option>
-            <option value="California">Colorado</option>
-            <option value="California">Connecticut</option>
-            <option value="California">Delaware</option>
-            <option value="California">Florida</option>
-            <option value="California">Georgia</option>
-            <option value="California">Hawaii</option>
-            <option value="California">Idaho</option>
-            <option value="California">Illinois</option>
-            <option value="California">Indiana</option>
-            <option value="California">Iowa</option>
-            <option value="California">Kansas</option>
-            <option value="California">Kentucky</option>
-            <option value="California">Louisiana</option>
-            <option value="California">Maine</option>
-            <option value="California">Maryland</option>
-            <option value="California">Massachusetts</option>
-            <option value="California">Michigan</option>
-            <option value="California">Minnesota</option>
-            <option value="California">Mississippi</option>
-            <option value="California">Missouri</option>
-            <option value="California">Montana</option>
-            <option value="California">Nebraska</option>
-            <option value="California">Nevada</option>
-            <option value="California">New Hampshire</option>
-            <option value="California">New Jersey</option>
-            <option value="California">New Mexico</option>
-            <option value="California">New York</option>
-            <option value="California">North Carolina</option>
-            <option value="California">North Dakota</option>
-            <option value="California">Ohio</option>
-            <option value="California">Oklahoma</option>
-            <option value="California">Oregon</option>
-            <option value="California">Pennsylvania</option>
-            <option value="California">Rhode Island</option>
-            <option value="California">South Carolina</option>
-            <option value="California">South Dakota</option>
-            <option value="California">Tennessee</option>
-            <option value="California">Texas</option>
-            <option value="California">Utah</option>
-            <option value="California">Vermont</option>
-            <option value="California">Virginia</option>
-            <option value="California">Washington</option>
-            <option value="California">West Virginia</option>
-            <option value="California">Wisconsin</option>
-            <option value="California">Wyoming</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label for="state">State</label>
+            <select name="state" class="form-control col-md-6">
+                <option selected>Choose...</option>
+                <option value="California">Alabama</option>
+                <option value="California">Alaska</option>
+                <option value="California">Arizona</option>
+                <option value="California">Arkansas</option>
+                <option value="California" >California</option>
+                <option value="California">Colorado</option>
+                <option value="California">Connecticut</option>
+                <option value="California">Delaware</option>
+                <option value="California">Florida</option>
+                <option value="California">Georgia</option>
+                <option value="California">Hawaii</option>
+                <option value="California">Idaho</option>
+                <option value="California">Illinois</option>
+                <option value="California">Indiana</option>
+                <option value="California">Iowa</option>
+                <option value="California">Kansas</option>
+                <option value="California">Kentucky</option>
+                <option value="California">Louisiana</option>
+                <option value="California">Maine</option>
+                <option value="California">Maryland</option>
+                <option value="California">Massachusetts</option>
+                <option value="California">Michigan</option>
+                <option value="California">Minnesota</option>
+                <option value="California">Mississippi</option>
+                <option value="California">Missouri</option>
+                <option value="California">Montana</option>
+                <option value="California">Nebraska</option>
+                <option value="California">Nevada</option>
+                <option value="California">New Hampshire</option>
+                <option value="California">New Jersey</option>
+                <option value="California">New Mexico</option>
+                <option value="California">New York</option>
+                <option value="California">North Carolina</option>
+                <option value="California">North Dakota</option>
+                <option value="California">Ohio</option>
+                <option value="California">Oklahoma</option>
+                <option value="California">Oregon</option>
+                <option value="California">Pennsylvania</option>
+                <option value="California">Rhode Island</option>
+                <option value="California">South Carolina</option>
+                <option value="California">South Dakota</option>
+                <option value="California">Tennessee</option>
+                <option value="California">Texas</option>
+                <option value="California">Utah</option>
+                <option value="California">Vermont</option>
+                <option value="California">Virginia</option>
+                <option value="California">Washington</option>
+                <option value="California">West Virginia</option>
+                <option value="California">Wisconsin</option>
+                <option value="California">Wyoming</option>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label for="zipcode">Zipcode</label>
-        <input name="zipcode" type="text" class="form-control" id="inputZip">
-    </div>
+        <div class="form-group">
+            <label for="zipcode">Zipcode</label>
+            <input name="zipcode" type="text" class="form-control col-md-6" id="inputZip">
+        </div>
 
-    <button type="submit" class="btn btn-success">Submit</button>
-</form>
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</div>
 
 {% endblock %}

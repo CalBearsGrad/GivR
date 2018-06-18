@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 
     {% block content %}
-<h1>Preferences:</h1>
-<h2>Big Giv</h2>
-<h4>What is the highest amount you are willing to give for a meal, including tax, delivery and tip?</h4>
-<form class="form-group" action="/preferences-big-giv" method="POST">
-  <div >
-    <label for="biggiv"></label>
-    <input type="number" class="form-control" name="biggiv" id="biggivamount" placeholder="$    (required)" required>
-    <small  class="form-text text-muted">You can always change your amount by selecting preferences from the menu.</small>
-  </div>
-  <button type="submit" class="btn btn-success">Submit</button>
-</form>
+<div class="container">
+    <h1>Preferences:</h1>
+    <h2>Big Giv</h2>
+    <h4>What is the highest amount you are willing to give for a meal, including tax, delivery and tip?</h4>
+    <form class="form-group" action="/preferences-big-giv" method="POST">
+      <div >
+        <label for="biggiv"></label>
+        <input type="number" class="form-control col-md-6" name="biggiv" id="biggivamount" placeholder="$    (required)" required>
+        <small  class="form-text text-muted">You can always change your amount by selecting preferences from the menu.</small>
+      </div>
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
 
+    </div>
 </div>
-
     {% endblock %}

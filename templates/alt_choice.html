@@ -1,28 +1,27 @@
 {% extends 'base.html' %}
 
     {% block content %}
-<h1 right:"30px" >Preference</h1>
-<br>
-<h3>What would you prefer if homeless individual is not at chosen location upon delivery?</h3>
-<h4>Choose One</h4>
-<br>
-<form class="form-group" action="/alt_choice" method="POST">
-    <div class="input-group">
-      <div class="input-group-prepend">
-        <div class="input-group-text">
-        <input type="radio" value="1" name="choice" required> Deliver to another visibly homeless individual
-        <br>
-        <input type="radio" value="2" name="choice"> Deliver to the nearest 24-hour Homeless Shelter
-        <br>
-        <input type="radio" value="3" name="choice"> Receive a Refund
-        <br>
+<div class="container">
+    <h1 right:"30px" >Preference</h1>
+    <br>
+    <h3>What would you prefer if homeless individual is not at chosen location upon delivery?</h3>
+    <h4>Choose One</h4>
+    <br>
+    <form class="form-group" action="/alt_choice" method="POST">
+        <div>
+            <div style="margin: 5px;">
+                <input type="radio" value="1" name="choice" required> Deliver to another visibly homeless individual
+                <br>
+                <input type="radio" value="2" name="choice"> Deliver to the nearest 24-hour Homeless Shelter
+                <br>
+                <input type="radio" value="3" name="choice"> Receive a Refund
+                <br>
+            </div>
         </div>
-      </div>
-    </div>
-<br>
-<br>
-  <button type="submit" class="btn btn-success">Submit</button>
-</form>
-
+    <br>
+    <br>
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</div>
 
     {% endblock %}

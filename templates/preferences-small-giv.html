@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 
     {% block content %}
-<h1>Preferences:</h1>
-<h2>Small Giv</h2>
-<h4>What is the highest amount you are willing to give for a snack, including tax, delivery and tip?</h4>
-<form class="form-group" action="/preferences-small-giv"  method="POST">
-  <div>
-    <label for="smallgiv"></label>
-    <input type="number" step="1" class="form-control" id="smallgivamount" name="smallgiv" placeholder="$     (required)" required>
-    <small class="form-text text-muted">You can always change your amount by selecting preferences from the menu.</small>
-  </div>
-  <button type="submit" class="btn btn-success">Submit</button>
-</form>
+<div class="container">
+    <h1>Preferences:</h1>
+    <h2>Small Giv</h2>
+    <h4>What is the highest amount you are willing to give for a snack, including tax, delivery and tip?</h4>
+    <form class="form-group" action="/preferences-small-giv"  method="POST">
+      <div>
+        <label for="smallgiv"></label>
+        <input type="number" step="1" class="form-control col-md-6" id="smallgivamount" name="smallgiv" placeholder="$     (required)" required>
+        <small class="form-text text-muted">You can always change your amount by selecting preferences from the menu.</small>
+      </div>
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
 
+    </div>
 </div>
-
     {% endblock %}

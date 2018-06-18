@@ -394,8 +394,23 @@ def welcome_givr():
 def log_in():
     """allow user to log_in"""
 
-    email = session["email"]
-    password = session["password"]
+    if "email" in session:
+        email = session["email"]
+        password = session["password"]
+
+    else:
+        email = ""
+        password = ""
+        
+
+    if request.method == "POST":
+        email = request.form.get("email")
+        session["email"] = email
+        password = request.form.get("password")
+        session["password"] = password
+
+
+        return redirect("/welcome-givr")
 
     return render_template("log_in.html", email=email, password=password)
 
@@ -957,61 +972,82 @@ def giv_map():
 
     givs = Giv.query.filter_by(givr_id=givr.givr_id).all()
 
-    givs_distinct = Giv.query.filter_by(givr_id=givr.givr_id).distinct(Giv.actual_destination)
+    givs_distinct = Giv.query.filter_by(givr_id=givr.givr_id).distinct(Giv.actual_destination).all()
 
     giv_count = Giv.query.filter_by(givr_id=givr.givr_id).count()
-
-    """ Get the distinct addresses where the GivR has Given"""
-
-    giv_addresses = []
-
-    for giv in givs_distinct:
-
-        giv_addresses.append(giv.actual_destination)
-
-    number_of_distinct_giv_addresses = len(giv_addresses)
-
-    # print "This is giv_addresses", giv_addresses, number_of_distinct_giv_addresses
-
 
     """ Create a dictionary of givs. The key will be the address, and the values will be:
      1) The number of total times GivR has given at that address,
      2) the total amount given at that address
      3) the average amount of Giv for that neighborhood"""
 
-    district_dictionary = { "District 6": [["94103","94109"], "South of Market/SOMA, Tenderloin, Treasure Island"],
-                            "District 5": [["94117"], "Haight Ashbury, Panhandle, Western Addition"],
-                            "District 3": [["94102", "94108"], "Russian Hill, Nob Hill, Telegraph Hill, North Beach"]
-                        }
+    district_dictionary = { "District 6": [["94103", "94109", "94107"], "South of Market/SOMA, Tenderloin, Treasure Island"],
+    "District 5": [["94117"], "Haight Ashbury, Panhandle, Western Addition"],
+    "District 3": [["94102", "94108", "94104"], "Russian Hill, Nob Hill, Telegraph Hill, North Beach"]
+    }
+    """total times given, total amount given, average amount given """
 
-    dictionary_of_givs = {}
+    master_list = []
+    district_6_list = [0, 0, 0]
+    district_5_list = [0, 0, 0]
+    district_3_list = [0, 0, 0]
+
+    print "This is giv_count", giv_count
 
     for giv in givs:
+        actual_destination = getattr(giv, "actual_destination")
+        actual_destination = str(actual_destination)
+        zipcode = actual_destination[-6:]
+        total_amount = getattr(giv, "total_amount")
         for key in district_dictionary:
-            if giv.actual_destination[-6:] in district_dictionary[key][0]:
-                if key in dictionary_of_givs:
-                    dictionary_of_givs[key][0] += 1
-                    dictionary_of_givs[key][1] += giv.total_amount
+            district_zipcodes = district_dictionary[key][0]
+            for district_zipcode in district_zipcodes:
 
-                else:
-                    dictionary_of_givs[key] = []
-                    dictionary_of_givs[key][0] = 1
-                    dictionary_of_givs[key][1] = 0
-                    dictionary_of_givs[key][2] = 0
+                if zipcode == district_zipcode:
 
-                dictionary_of_givs[key][2] = (dictionary_of_givs[key][1] / dictionary_of_givs[key][0])
+                    print "I am about to enter district_6_list"
+                    if  key in district_dictionary == "District 6":
+                        print "in district_6_list"
+                        district_6_list[0] += 1
+                        district_6_list[1] += total_amount
+
+                    elif key == "District 5":
+                        district_5_list[0] += 1
+                        district_5_list[1] += total_amount
+
+                    elif key == "District 3":
+                        district_3_list[0] += 1
+                        district_3_list[1] += total_amount
+
+                    else:
+                        print "I am in the else loop."
+                        pass
+        else:
+            pass
+
+    if district_6_list[0] != 0:
+        district_6_list[2] = district_6_list[1] / district_6_list[0]
+
+    if district_5_list[0] != 0:
+        district_5_list[2] = district_5_list[1] / district_5_list[0]
+
+    if district_3_list[0] != 0:
+        district_3_list[2] = district_3_list[1] / district_3_list[0]
+
+    district_6_list.append(district_dictionary["District 6"][1])
+    district_5_list.append(district_dictionary["District 5"][1])
+    district_3_list.append(district_dictionary["District 3"][1])
+
+    master_list.append(district_6_list)
+    master_list.append(district_5_list)
+    master_list.append(district_3_list)
 
     print
-    print "This is dictionary of givs", jsonify(dictionary_of_givs)
+    print "This is master list", master_list
     print
-    data_dict = {"number_of_distinct_giv_addresses": number_of_distinct_giv_addresses,
-                 "district_dictionary": district_dictionary,
-                 "dictionary_of_givs": dictionary_of_givs,
-                 "giv_addresses": giv_addresses,
-                 "giv_lat_longs": giv_lat_longs}
+    
 
-    return number_of_distinct_giv_addresses, district_dictionary, dictionary_of_givs, giv_addresses, giv_lat_longs
-
+    return district_dictionary, master_list
 
 
 
@@ -1020,8 +1056,10 @@ def giv_history():
     """ Renders the user;s giv history"""
     correct_tax_deductible_givs()
 
-    # number_of_distinct_giv_addresses, district_dictionary, dictionary_of_givs, giv_addresses, giv_lat_longs = giv_map()
+    # district_dictionary,master_list = giv_map()
 
+    district_dictionary = district_dictionary
+    master_list = master_list
 
     email = session["email"]
 
@@ -1031,11 +1069,8 @@ def giv_history():
 
     return render_template("giv_history.html")
 
-    # return render_template("giv_history.html", number_of_distinct_giv_addresses=number_of_distinct_giv_addresses,
-    #                                            district_dictionary=district_dictionary,
-    #                                            dictionary_of_givs=dictionary_of_givs,
-    #                                            giv_addresses=giv_addresses,
-    #                                            giv_lat_longs=giv_lat_longs)
+    # return render_template("giv_history.html", district_dictionary=district_dictionary,
+    #                                            master_list=master_list)
 
 
 @app.route("/track_order")
@@ -1044,11 +1079,17 @@ def track_order():
 
     return render_template("track_order.html")
 
+@app.route("/how_givr_works")
+def how_givr_works():
+    """allow user to learn about GivR."""
+
+    return render_template("how_Givr_works.html")
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = True
+    app.debug = False
     # make sure templates, etc. are not cached in debug mode
     app.jinja_env.auto_reload = app.debug
 

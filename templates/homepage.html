@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 
     {% block content %}
-
+<div class="container" style="align-content: center; col-sm-12">
     <h1 z="1" class="title" id="welcome font-size: 50px;" color="green">Welcome. Ready to Giv?</h1>
   <div z="1" id="carouselExampleSlidesOnly" class="container carousel slide" data-ride="carousel">
       <div class="carousel-inner">
@@ -19,31 +19,32 @@
           <img class="d-block w-100" src="static/city-cars-traffic-lights.jpg" src=".../800x400?auto=yes&bg=555&fg=333&text=Fourth slide" alt="Fourth slide">
         </div>
         <div class="carousel-item">
-          <img class="d-block w-100" src="static/homeless-man-portrait.jpg" src=".../800x400?auto=yes&bg=555&fg=333&text=Fifth slide" alt="Fifth slide">
+          <img class="d-block w-100" src="static/sunset-view-over-san-francisco-skyscrapers-in-financial-district.jpg" src=".../800x400?auto=yes&bg=555&fg=333&text=Fifth slide" alt="Fifth slide">
         </div>
       </div>
   </div>
     <br>
     <br>
-    <form>
-      <button type="button" value="register" onclick="window.location.href='/preferences-basic-info'" class="btn btn-success">Want to Become a Givr?</button>
-    </form>
-    <br>
-    <h5>OR</h5>
-    <br>
-    <form action="/check-user" method="POST">
-      <p>What is your email address?</p>
-          <input id="emailAddress" type="email" name="email" placeholder="email@address.com"required></input>
-          <p>What is your password?</p>
-          <input type="password" name="password" required></input>
-          <br>
-          <br>
-      <button type"submit" class="btn btn-success">Log In</button>
-    </form>
-    <br>
-    <br>
-    <br>
 
+      <form>
+        <button type="button" value="register" onclick="window.location.href='/preferences-basic-info'" class="btn btn-success">Want to Become a Givr?</button>
+      </form>
+      <br>
+      <h5>OR</h5>
+      <br>
+      <form action="/check-user" method="POST">
+        <p>What is your email address?</p>
+            <input id="emailAddress" type="email" name="email" placeholder="email@address.com"required></input>
+            <p>What is your password?</p>
+            <input type="password" name="password" required></input>
+            <br>
+            <br>
+        <button type"submit" class="btn btn-success">Log In</button>
+      </form>
+      <br>
+      <br>
+      <br>
+</div>
 
 
 

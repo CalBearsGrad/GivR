@@ -1,66 +1,67 @@
 {% extends 'base.html' %}
 
  {% block content %}
-<h1>Contact Givr</h1>
- <img src="/static/homeless-man-eating-portrait-poor-food-30674565.jpg" alt="logo_transparent" style="width:600px;height:400px;">
- <br>
- <br>
- <br>
-<h2>Please fill out form below. </h2>
-<br>
-<br>
-<br>
-<form>
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="inputEmail4">Email</label>
-      <input type="email" class="form-control" id="inputEmail4" placeholder="Email@something.com">
-    </div>
-  </div>
+ <div class="container">
+  <h1>Contact Givr</h1>
+   <hr>
+   <br>
+   <br>
+  <h2>Please fill out form below. </h2>
   <br>
-  <div class="form-group">
-    <label for="inputAddress">phone</label>
-    <input type="text" class="form-control" id="inputAddress" placeholder="415-222-1212">
-  </div>
   <br>
-  <div class="form-group">
-    <label for="inputAddress2">Question or Comment</label>
-    <input type="text" class="form-control" id="inputAddress2" placeholder="">
-  </div>
   <br>
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="inputCity">Description of Issue (if applicable)</label>
-      <input type="text" class="form-control" id="inputCity">
+  <form>
+    <div class="form-row">
+      <div class="form-group col-md-6 col-sm-12">
+        <label for="inputEmail4">Email</label>
+        <input type="email" class="form-control" id="inputEmail4" placeholder="Email@something.com">
+      </div>
     </div>
     <br>
-    <div class="form-group col-md-4">
-      <label for="inputState">Choose a General Topic Below</label>
-      <select id="inputState" class="form-control">
-        <option selected>Choose...</option>
-        <option>Ordering</option>
-        <option>Delivery</option>
-        <option>Website</option>
-      </select>
+    <div class="form-group">
+      <label for="inputAddress">phone</label>
+      <input type="text" class="form-control" id="inputAddress" placeholder="415-222-1212">
     </div>
-    <div class="form-group col-md-2">
-      <label for="inputZip">Zip</label>
-      <input type="text" class="form-control" id="inputZip">
+    <br>
+    <div class="form-group">
+      <label for="inputAddress2">Question or Comment</label>
+      <input type="text" class="form-control" id="inputAddress2" placeholder="">
     </div>
-  </div>
-  <div class="form-group">
-    <div class="form-check">
+    <br>
+    <div class="form-row">
+      <div class="form-group col-md-6 col-sm-12">
+        <label for="inputCity">Description of Issue (if applicable)</label>
+        <input type="text" class="form-control" id="inputCity">
+      </div>
       <br>
-      <input class="form-check-input" type="checkbox" id="gridCheck">
-      <label class="form-check-label" for="gridCheck">
-        I would like to be contacted regarding GivR updates.
-      </label>
+      <div class="form-group col-md-6 col-sm-12">
+        <label for="inputState">Choose a General Topic Below</label>
+        <select id="inputState" class="form-control">
+          <option selected>Choose...</option>
+          <option>Ordering</option>
+          <option>Delivery</option>
+          <option>Website</option>
+        </select>
+      </div>
+      <div class="form-group col-md-6 col-sm-12">
+        <label for="inputZip">Zip</label>
+        <input type="text" class="form-control" id="inputZip">
+      </div>
     </div>
-  </div>
-  <br>
-  <button type="submit" class="btn btn-primary">Submit</button>
-  <small>We will respond to your inquiry as soon as possible, generally within one business day. Expect a longer delay on nights, holidays and weekends.</small>
-</form>
+    <div class="form-group">
+      <div class="form-check">
+        <br>
+        <input class="form-check-input" type="checkbox" id="gridCheck">
+        <label class="form-check-label" for="gridCheck">
+          I would like to be contacted regarding GivR updates.
+        </label>
+      </div>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-success">Submit</button>
+    <small>We will respond to your inquiry as soon as possible, generally within one business day. Expect a longer delay on nights, holidays and weekends.</small>
+  </form>
+</div>
 <br>
 <br>
 <br>

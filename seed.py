@@ -95,7 +95,7 @@ def create_givs(addresses, givr_id, num_givs_per_address, start_date, end_date):
 
             size = "smallgiv"
 
-            if address == "1001 Polk Street, San Francisco, California 94109" or address == "536 Central Avenue, San Francisco, California 94117":
+            if (address == "1001 Polk Street, San Francisco, California 94109") or (address == "536 Central Avenue, San Francisco, California 94117"):
                 tax_exempt = True
             else:
                 tax_exempt = False
@@ -269,5 +269,5 @@ if __name__ == "__main__":
     # load_items()
     # load_recipients()
     # load_recipient_orgs()
-    create_givs(("600 Townsend St #200, San Francisco, CA 94103", "598 Market St, San Francisco, CA 94104"),
-        000000001, 100, "01-01-2018 01:01:01", "06-1-2018 01:01:01")
+    create_givs(("600 Townsend Street, San Francisco, CA 94103", "598 Market St, San Francisco, CA 94104", "1001 Polk Street, San Francisco, California 94109", "536 Central Avenue, San Francisco, California 94117"),
+        000000001, 150, "01-01-2018 01:01:01", "06-1-2018 01:01:01")

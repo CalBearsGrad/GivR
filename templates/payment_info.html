@@ -1,40 +1,45 @@
 {% extends 'base.html' %}
 
     {% block content %}
-<h1>Preferences:</h1>
-<h2>Credit Card Info</h2>
-<h4>Enter the credit card or debit card that you would like to use.</h4>
-<br>
-<form id="paymentform" class="form-group" action="/payment-info" method="POST">
-  <div >
-    <label>Name as it appears on credit card</label>
-    <input type="text" class="form-control" name="creditcardname" id="creditcardname" placeholder="Jane Doe    (required)" required>
-    <br>
-    <br>
-    <div class="form-group">
-      <label>Type of Credit Card</label>
-      <select id="creditcardtype" name="creditcardtype" class="form-control" required>
-          <option selected>Choose a Card...</option>
-          <option value="visa">Visa</option>
-          <option value="mastercard">Mastercard</option>
-          <option value="discovery">Discovery</option>
-          <option value="american_expresss">American Express</option>
-      </select>
-    <br>
-    <br>
-    <label>16 digit credit card number</label>
-    <input type="password" maxlength="16" class="form-control" name="creditcardnum" id="creditcardnum" pattern="[0-9]{16}" placeholder="no spaces or dashes    (required)" required>
-    <br>
-    <label>credit card expiration date</label>
-    <input type="text" class="form-control" name="creditcardexp" id="creditcardexp" pattern="(?:0[1-9]|1[0-2])\/[0-9]{2}" title="Please enter a valid expiration date" placeholder="MM/YY   (required)" required>
-    <br>
-    <input type="password" maxlength="3" class="form-control" name="creditcardccv" id="creditcardccv" pattern="[0-9]{3}" placeholder="ccv" required>
-    <br>
-    <small  class="form-text text-muted">You can always change your credit card info by selecting preferences from the menu.</small>
+<div class="container">
+  <h1>Preferences:</h1>
+  <hr>
+  <br>
+  <h2>Credit Card Info</h2>
+  <br>
+  <h4>Enter the credit card or debit card that you would like to use.</h4>
+  <br>
+  <form id="paymentform" class="form-group" action="/payment-info" method="POST">
+    <div >
+      <label>Name as it appears on credit card</label>
+      <input type="text" class="form-control col-md-6" name="creditcardname" id="creditcardname" placeholder="Jane Doe    (required)" required>
+      <br>
+      <div class="form-group">
+        <label>Type of Credit Card</label>
+        <select id="creditcardtype" name="creditcardtype" class="form-control col-md-6"  required>
+            <option selected>Choose a Card...</option>
+            <option value="visa">Visa</option>
+            <option value="mastercard">Mastercard</option>
+            <option value="discovery">Discovery</option>
+            <option value="american_expresss">American Express</option>
+        </select>
+      <br>
+      <label>16 digit credit card number</label>
+      <input type="password" maxlength="16" class="form-control col-md-6"  name="creditcardnum" id="creditcardnum" pattern="[0-9]{16}" placeholder="no spaces or dashes    (required)" required>
+      <br>
+      <label>credit card expiration date</label>
+      <input type="text" class="form-control col-md-6"  name="creditcardexp" id="creditcardexp" pattern="(?:0[1-9]|1[0-2])\/[0-9]{2}" title="Please enter a valid expiration date" placeholder="MM/YY   (required)" required>
+      <br>
+      <input type="password" maxlength="3" class="form-control col-md-6" name="creditcardccv" id="creditcardccv" pattern="[0-9]{3}" placeholder="ccv" required>
+      <br>
+      <small  class="form-text text-muted">You can always change your credit card info by selecting preferences from the menu.</small>
+    </div>
+    <button id="paymentform" type="submit" class="btn btn-success">Submit</button>
+  </form>
+  <br>
+  <br>
+  <br>
   </div>
-  <button id="paymentform" type="submit" class="btn btn-success">Submit</button>
-</form>
-
 </div>
 <script type="text/javascript">
 
