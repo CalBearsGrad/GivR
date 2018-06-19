@@ -654,8 +654,6 @@ def rapid_giv():
 
         resp_json_payload = response.json()
 
-        print(resp_json_payload['results'][0]['geometry']['location'])
-
         google_location_dictionary = (resp_json_payload['results'][0]['geometry']['location'])
 
         latitude = google_location_dictionary["lat"]
@@ -1058,8 +1056,8 @@ def giv_history():
 
     # district_dictionary,master_list = giv_map()
 
-    district_dictionary = district_dictionary
-    master_list = master_list
+    # district_dictionary = district_dictionary
+    # master_list = master_list
 
     email = session["email"]
 
